@@ -6,6 +6,7 @@
 <title>Rise Broadband OAP Analysis Map</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.vectorgrid@1.3.0/dist/Leaflet.VectorGrid.bundled.js"></script>
 <style>
 html, body { width: 100%; height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
@@ -673,7 +674,59 @@ layers.sprocketSegs.addTo(map);
 layers.sprocketBlds.addTo(map);
 
 // Layer control
+
+// TX BEAD Award Areas (vector tiles from ready.net)
+const beadStyle = {
+    proposed_project_areas_tx: function(properties, zoom) {
+        let fillColor = '#0066FF';
+        let fillOpacity = 0.15;
+        let weight = 1.5;
+        let color = '#0044CC';
+        if (properties.is_high_cost) { fillColor = '#FF6600'; color = '#CC4400'; }
+        if (properties.is_tribal) { fillColor = '#9933FF'; color = '#6600CC'; }
+        return { fillColor: fillColor, fillOpacity: fillOpacity, weight: weight, color: color, opacity: 0.6, fill: true };
+    }
+};
+
+const beadLayer = L.vectorGrid.protobuf(
+    'https://tiling.ready.net/data/proposed_project_areas_tx/{z}/{x}/{y}.pbf',
+    {
+        vectorTileLayerStyles: beadStyle,
+        interactive: true,
+        maxZoom: 11,
+        getFeatureId: function(f) { return f.properties.fid; }
+    }
+);
+
+beadLayer.on('click', function(e) {
+    const p = e.layer.properties;
+    const price = p.reference_price ? '$' + Number(p.reference_price).toLocaleString() : 'N/A';
+    const flags = [];
+    if (p.is_high_cost) flags.push('High Cost');
+    if (p.is_tribal) flags.push('Tribal');
+    if (p.is_border_adjacent) flags.push('Border Adjacent');
+    if (p.is_donut_hole) flags.push('Donut Hole');
+    const flagStr = flags.length > 0 ? flags.join(', ') : 'Standard';
+    const round = p.program_round_id || 'N/A';
+    L.popup()
+        .setContent(
+            '<div style="font-family:Arial;font-size:12px;min-width:200px;">' +
+            '<div style="font-weight:bold;font-size:13px;color:#0044CC;margin-bottom:6px;">TX BEAD Award Area</div>' +
+            '<div><b>Project:</b> ' + (p.name || 'N/A') + '</div>' +
+            '<div><b>Reference Price:</b> ' + price + '</div>' +
+            '<div><b>Round:</b> ' + round + '</div>' +
+            '<div><b>Classification:</b> ' + flagStr + '</div>' +
+            '<div><b>FID:</b> ' + (p.fid || 'N/A') + '</div>' +
+            '</div>'
+        )
+        .setLatLng(e.latlng)
+        .openOn(map);
+});
+
+layers.beadAreas = beadLayer;
+
 const overlays = {
+    '<span style="color:#0066FF">&#9632;</span> TX BEAD Award Areas': layers.beadAreas,
     '<span style="color:#27AE60;font-weight:bold">&#9679;</span> Phase 1 - Immediate (16)': layers.phase1,
     '<span style="color:#2F80ED;font-weight:bold">&#9679;</span> Phase 2A - Near Network (27)': layers.phase2a,
     '<span style="color:#F59E0B;font-weight:bold">&#9679;</span> Phase 2B - Build Required (36)': layers.phase2b,
@@ -719,6 +772,11 @@ legend.onAdd = function() {
         <div class="legend-item"><span style="color:#00C853">&#9679;</span> New Tarana (70)</div>
         <div class="legend-item"><span style="color:#2979FF">&#9679;</span> Planned Tarana (8)</div>
         <div class="legend-item"><span style="color:#FFD600">&#9679;</span> Top 100 Only (22)</div>
+        <hr style="margin:4px 0;border-color:#eee;">
+        <div style="font-weight:600;font-size:11px;color:#0044CC;margin:4px 0 2px 0;">TX BEAD Awards</div>
+        <div class="legend-item"><span style="display:inline-block;width:12px;height:12px;background:rgba(0,102,255,0.3);border:1.5px solid #0044CC;"></span> Standard Area</div>
+        <div class="legend-item"><span style="display:inline-block;width:12px;height:12px;background:rgba(255,102,0,0.3);border:1.5px solid #CC4400;"></span> High Cost Area</div>
+        <div class="legend-item"><span style="display:inline-block;width:12px;height:12px;background:rgba(153,51,255,0.3);border:1.5px solid #6600CC;"></span> Tribal Area</div>
         <div style="font-weight:600;font-size:11px;color:#1E2761;margin:4px 0 2px 0;">Infrastructure</div>
         <div class="legend-item"><span class="legend-line" style="background:#FF0000"></span> Fiberlight IRU</div>
         <div class="legend-item"><span class="legend-line" style="background:#1f4e79"></span> Sprocket Fiber (Fort Worth)</div>
