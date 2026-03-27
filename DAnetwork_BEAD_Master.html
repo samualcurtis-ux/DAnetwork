@@ -103,10 +103,22 @@ function masterBeadLookup(state, fid) {
         var okResult = okBeadLookup(fid);
         if (okResult) return okResult;
     }
+    if (state === 'az') {
+        var azProv = azAreaProv[String(fid)];
+        if (azProv) {
+            return {
+                name: azProv,
+                color: stateConfig['az'] ? stateConfig['az'].color : '#E74C3C',
+                state: 'az',
+                providers: [{name: azProv}],
+                funding: null
+            };
+        }
+    }
     // State-level summary fallback for all states
-    // For TX and OK where we have per-area lookups, show generic label if lookup missed
+    // For TX, OK, AZ where we have per-area lookups, show generic label if lookup missed
     if (stateSummaries[state]) {
-        var fallbackName = (state === 'tx' || state === 'ok') ? 'BEAD Award Area' :
+        var fallbackName = (state === 'tx' || state === 'ok' || state === 'az') ? 'BEAD Award Area' :
             (stateSummaries[state].providers[0] ? stateSummaries[state].providers[0].name : 'BEAD Award');
         return {
             name: fallbackName,
@@ -125,11 +137,11 @@ var stateConfig = {
           tileUrl: 'https://tiling.ready.net/data/proposed_project_areas_ok/{z}/{x}/{y}.pbf',
           layerName: 'proposed_project_areas_ok', hasProviders: true },
     mo: { name: 'Missouri', center: [38.5, -92.5], zoom: 7, color: '#16A085', hasProviders: true, isGeoJSON: true },
-    il: { name: 'Illinois', center: [40.0, -89.4], zoom: 7, color: '#C0392B', hasProviders: false, isGeoJSON: true },
+    il: { name: 'Illinois', center: [40.0, -89.4], zoom: 7, color: '#C0392B', hasProviders: true, isGeoJSON: true },
     az: { name: 'Arizona', center: [34.3, -111.7], zoom: 7, maxNativeZoom: 10, color: '#E74C3C',
           tileUrl: 'https://tiling.ready.net/data/proposed_project_areas_az/{z}/{x}/{y}.pbf',
-          layerName: 'proposed_project_areas_az', hasProviders: false },
-    nv: { name: 'Nevada', center: [39.5, -116.5], zoom: 7, color: '#FF6B35', hasProviders: false, isGeoJSON: true },
+          layerName: 'proposed_project_areas_az', hasProviders: true },
+    nv: { name: 'Nevada', center: [39.5, -116.5], zoom: 7, color: '#FF6B35', hasProviders: true, isGeoJSON: true },
     tx: { name: 'Texas', center: [31.5, -99.5], zoom: 6, maxNativeZoom: 9, color: '#2F80ED',
           tileUrl: 'https://tiling.ready.net/data/proposed_project_areas_tx/{z}/{x}/{y}.pbf',
           layerName: 'proposed_project_areas_tx', hasProviders: true }
@@ -174,6 +186,12 @@ var moProvColors = {
     'Verizon': '#FF0000',
     'Southwest Missouri Electric': '#FF4500'
 };
+
+// County-level BEAD provider lookups (IL, NV, AZ)
+var ilCountyProv = {"17057":"Amazon Kuiper","17187":"AMG Technology","17179":"Strategic Mgmt","17169":"Amazon Kuiper","17157":"Strategic Mgmt","17145":"Citizens Telecom","17033":"Amazon Kuiper","17109":"AMG Technology","17067":"Strategic Mgmt","17071":"AMG Technology","17197":"Amazon Kuiper","17043":"Amazon Kuiper","17085":"AMG Technology","17027":"Wisper","17189":"Strategic Mgmt","17081":"Wisper","17021":"Strategic Mgmt","17115":"Strategic Mgmt","17039":"Amazon Kuiper","17019":"Amazon Kuiper","17023":"Strategic Mgmt","17009":"Amazon Kuiper","17139":"Strategic Mgmt","17159":"Citizens Telecom","17121":"Wisper","17079":"Wisper","17155":"Amazon Kuiper","17011":"Strategic Mgmt","17083":"Strategic Mgmt","17119":"Strategic Mgmt","17013":"Amazon Kuiper","17193":"Wisper","17195":"AMG Technology","17181":"Conexon Connect","17165":"Wisper","17045":"Wisper","17053":"AMG Technology","17091":"Amazon Kuiper","17063":"Strategic Mgmt","17125":"Amazon Kuiper","17073":"AMG Technology","17147":"Strategic Mgmt","17099":"Amazon Kuiper","17005":"Strategic Mgmt","17035":"Consolidated Comm","17177":"Silo Communications","17201":"Silo Communications","17185":"Strategic Mgmt","17203":"Strategic Mgmt","17113":"Amazon Kuiper","17041":"Amazon Kuiper","17107":"Amazon Kuiper","17075":"AMG Technology","17141":"Silo Communications","17037":"Amazon Kuiper","17017":"Amazon Kuiper","17105":"Amazon Kuiper","17103":"Strategic Mgmt","17175":"AMG Technology","17049":"Amazon Kuiper","17173":"Consolidated Comm","17101":"Wisper","17059":"Wisper","17061":"IL Electric Coop","17183":"Amazon Kuiper","17149":"Amazon Kuiper","17089":"Amazon Kuiper","17093":"Amazon Kuiper","17051":"Wisper","17171":"IL Electric Coop","17003":"Wisper","17135":"Consolidated Comm","17129":"AMG Technology","17133":"Wisper","17029":"Amazon Kuiper","17127":"Comcast","17199":"ProTek Comm","17117":"Wisper","17131":"AMG Technology","17095":"AMG Technology","17163":"Wisper","17015":"AMG Technology","17137":"IL Electric Coop","17001":"Amazon Kuiper","17007":"Amazon Kuiper","17167":"GHB Enterprise","17143":"Amazon Kuiper","17161":"AMG Technology","17031":"Amazon Kuiper","17097":"Amazon Kuiper","17111":"Strategic Mgmt","17153":"Wisper","17151":"Amazon Kuiper","17047":"Wisper","17055":"Wisper","17065":"Wisper","17077":"Wisper","17087":"Wisper","17069":"Amazon Kuiper","17025":"Strategic Mgmt"};
+var nvCountyProv = {"32510":"Hot Spot Broadband","32001":"Hot Spot Broadband","32003":"Stimulus Tech","32005":"DTS Fiber","32007":"Anthem Broadband","32009":"Satview Broadband","32011":"Hot Spot Broadband","32013":"Stimulus Tech","32015":"Hot Spot Broadband","32019":"Hot Spot Broadband","32021":"Stimulus Tech","32023":"Stimulus Tech","32027":"Hot Spot Broadband","32029":"NV Bell (Lumen)","32031":"Hot Spot Broadband","32033":"Commnet"};
+var azCountyProv = {"04003":"TransWorld Network","04011":"TransWorld Network","04015":"Wecom","04009":"TransWorld Network","04005":"Wecom","04021":"Wecom","04017":"Wecom","04025":"Wecom","04007":"Wecom","04013":"Wecom","04023":"Mediacom","04001":"SpaceX (Starlink)","04019":"SpaceX (Starlink)"};
+var azAreaProv = {"606":"TransWorld Network","655":"TransWorld Network","656":"TransWorld Network","657":"TransWorld Network","658":"TransWorld Network","660":"TransWorld Network","661":"TransWorld Network","662":"TransWorld Network","663":"TransWorld Network","664":"TransWorld Network","612":"Wecom","613":"Wecom","614":"Wecom","615":"Wecom","616":"Wecom","617":"Wecom","618":"Wecom","619":"Wecom","621":"Wecom","623":"Wecom","624":"Wecom","625":"Wecom","626":"Wecom","636":"Wecom","653":"Wecom","927":"Wecom","928":"Wecom","511":"Trico Electric Cooperative","712":"Trico Electric Cooperative","531":"WeLink Communications","690":"WeLink Communications","685":"Mediacom","686":"Mediacom","530":"Tohono O'odham Utility Authority","561":"Resound Networks","564":"Resound Networks","648":"Navajo Nation","718":"SpaceX (Starlink)","719":"SpaceX (Starlink)","724":"SpaceX (Starlink)","725":"SpaceX (Starlink)","726":"SpaceX (Starlink)","728":"SpaceX (Starlink)","729":"SpaceX (Starlink)","739":"SpaceX (Starlink)","740":"SpaceX (Starlink)","742":"SpaceX (Starlink)","744":"SpaceX (Starlink)","745":"SpaceX (Starlink)","746":"SpaceX (Starlink)","747":"SpaceX (Starlink)","749":"SpaceX (Starlink)","757":"SpaceX (Starlink)","760":"SpaceX (Starlink)","763":"SpaceX (Starlink)","765":"SpaceX (Starlink)","769":"SpaceX (Starlink)","771":"SpaceX (Starlink)","778":"SpaceX (Starlink)","779":"SpaceX (Starlink)","780":"SpaceX (Starlink)","782":"SpaceX (Starlink)","785":"SpaceX (Starlink)","790":"SpaceX (Starlink)","794":"SpaceX (Starlink)","797":"SpaceX (Starlink)","798":"SpaceX (Starlink)","694":"Comcast","695":"Comcast","696":"Comcast"};
 
 // ===== INITIALIZE MAP =====
 var map = L.map('map', {zoomControl: true}).setView([37.5, -95.0], 5);
@@ -311,10 +329,16 @@ var geoJsonData = { mo: moCountyData, il: ilCountyData, nv: nvCountyData };
                     } catch(e) {}
                 }
                 if (st === 'il') {
-                    html += '<div style="margin-top:6px;font-size:10px">IL providers include: WISPER ISP (36,444 locs), Strategic Mgmt (38,581), Amazon Kuiper (23,739), Surf Air (14,563), Comcast (12,937)</div>';
+                    var ilProv = ilCountyProv[props.GEOID];
+                    if (ilProv) {
+                        html += '<div class="stat-row"><span class="stat-label">Provider:</span><span class="stat-value"><span class="provider-tag" style="background:#C0392B">' + ilProv + '</span></span></div>';
+                    }
                 }
                 if (st === 'nv') {
-                    if (stateSummaries.nv && stateSummaries.nv.providers.length > 0) {
+                    var nvProv = nvCountyProv[props.GEOID];
+                    if (nvProv) {
+                        html += '<div class="stat-row"><span class="stat-label">Provider:</span><span class="stat-value"><span class="provider-tag" style="background:#FF6B35">' + nvProv + '</span></span></div>';
+                    } else if (stateSummaries.nv && stateSummaries.nv.providers.length > 0) {
                         html += '<div style="margin-top:6px;font-weight:bold;font-size:11px">Top Providers in Nevada:</div>';
                         stateSummaries.nv.providers.slice(0, 5).forEach(function(p) {
                             var beamStr = (p.bead/1000000).toFixed(1);
@@ -394,7 +418,7 @@ summary.onAdd = function() {
     div.innerHTML = '<h4>DAnetwork BEAD Awards</h4>' +
         '<div style="font-size:11px">' +
         '<div class="stat-row"><span class="stat-label">States covered:</span><span class="stat-value">6</span></div>' +
-        '<div class="stat-row"><span class="stat-label">Provider-mapped:</span><span class="stat-value">OK, MO, TX</span></div>' +
+        '<div class="stat-row"><span class="stat-label">Provider-mapped:</span><span class="stat-value">OK, MO, TX, IL, NV, AZ</span></div>' +
         '<hr style="margin:4px 0;border-color:#eee">' +
         '<div style="font-weight:bold;color:#1E2761;margin-bottom:4px">Awards by Company:</div>' +
         '<div class="stat-row"><span class="stat-label">E8/AtLink (OK)</span><span class="stat-value">$3.5M</span></div>' +
