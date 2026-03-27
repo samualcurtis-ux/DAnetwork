@@ -104,7 +104,7 @@ function masterBeadLookup(state, fid) {
         if (okResult) return okResult;
     }
     if (state === 'az') {
-        var azProv = azAreaProv[String(fid)];
+        var azProv = azNameProv[String(fid)];
         if (azProv) {
             return {
                 name: azProv,
@@ -191,7 +191,7 @@ var moProvColors = {
 var ilCountyProv = {"17057":"Amazon Kuiper","17187":"AMG Technology","17179":"Strategic Mgmt","17169":"Amazon Kuiper","17157":"Strategic Mgmt","17145":"Citizens Telecom","17033":"Amazon Kuiper","17109":"AMG Technology","17067":"Strategic Mgmt","17071":"AMG Technology","17197":"Amazon Kuiper","17043":"Amazon Kuiper","17085":"AMG Technology","17027":"Wisper","17189":"Strategic Mgmt","17081":"Wisper","17021":"Strategic Mgmt","17115":"Strategic Mgmt","17039":"Amazon Kuiper","17019":"Amazon Kuiper","17023":"Strategic Mgmt","17009":"Amazon Kuiper","17139":"Strategic Mgmt","17159":"Citizens Telecom","17121":"Wisper","17079":"Wisper","17155":"Amazon Kuiper","17011":"Strategic Mgmt","17083":"Strategic Mgmt","17119":"Strategic Mgmt","17013":"Amazon Kuiper","17193":"Wisper","17195":"AMG Technology","17181":"Conexon Connect","17165":"Wisper","17045":"Wisper","17053":"AMG Technology","17091":"Amazon Kuiper","17063":"Strategic Mgmt","17125":"Amazon Kuiper","17073":"AMG Technology","17147":"Strategic Mgmt","17099":"Amazon Kuiper","17005":"Strategic Mgmt","17035":"Consolidated Comm","17177":"Silo Communications","17201":"Silo Communications","17185":"Strategic Mgmt","17203":"Strategic Mgmt","17113":"Amazon Kuiper","17041":"Amazon Kuiper","17107":"Amazon Kuiper","17075":"AMG Technology","17141":"Silo Communications","17037":"Amazon Kuiper","17017":"Amazon Kuiper","17105":"Amazon Kuiper","17103":"Strategic Mgmt","17175":"AMG Technology","17049":"Amazon Kuiper","17173":"Consolidated Comm","17101":"Wisper","17059":"Wisper","17061":"IL Electric Coop","17183":"Amazon Kuiper","17149":"Amazon Kuiper","17089":"Amazon Kuiper","17093":"Amazon Kuiper","17051":"Wisper","17171":"IL Electric Coop","17003":"Wisper","17135":"Consolidated Comm","17129":"AMG Technology","17133":"Wisper","17029":"Amazon Kuiper","17127":"Comcast","17199":"ProTek Comm","17117":"Wisper","17131":"AMG Technology","17095":"AMG Technology","17163":"Wisper","17015":"AMG Technology","17137":"IL Electric Coop","17001":"Amazon Kuiper","17007":"Amazon Kuiper","17167":"GHB Enterprise","17143":"Amazon Kuiper","17161":"AMG Technology","17031":"Amazon Kuiper","17097":"Amazon Kuiper","17111":"Strategic Mgmt","17153":"Wisper","17151":"Amazon Kuiper","17047":"Wisper","17055":"Wisper","17065":"Wisper","17077":"Wisper","17087":"Wisper","17069":"Amazon Kuiper","17025":"Strategic Mgmt"};
 var nvCountyProv = {"32510":"Hot Spot Broadband","32001":"Hot Spot Broadband","32003":"Stimulus Tech","32005":"DTS Fiber","32007":"Anthem Broadband","32009":"Satview Broadband","32011":"Hot Spot Broadband","32013":"Stimulus Tech","32015":"Hot Spot Broadband","32019":"Hot Spot Broadband","32021":"Stimulus Tech","32023":"Stimulus Tech","32027":"Hot Spot Broadband","32029":"NV Bell (Lumen)","32031":"Hot Spot Broadband","32033":"Commnet"};
 var azCountyProv = {"04003":"TransWorld Network","04011":"TransWorld Network","04015":"Wecom","04009":"TransWorld Network","04005":"Wecom","04021":"Wecom","04017":"Wecom","04025":"Wecom","04007":"Wecom","04013":"Wecom","04023":"Mediacom","04001":"SpaceX (Starlink)","04019":"SpaceX (Starlink)"};
-var azAreaProv = {"606":"TransWorld Network","655":"TransWorld Network","656":"TransWorld Network","657":"TransWorld Network","658":"TransWorld Network","660":"TransWorld Network","661":"TransWorld Network","662":"TransWorld Network","663":"TransWorld Network","664":"TransWorld Network","612":"Wecom","613":"Wecom","614":"Wecom","615":"Wecom","616":"Wecom","617":"Wecom","618":"Wecom","619":"Wecom","621":"Wecom","623":"Wecom","624":"Wecom","625":"Wecom","626":"Wecom","636":"Wecom","653":"Wecom","927":"Wecom","928":"Wecom","511":"Trico Electric Cooperative","712":"Trico Electric Cooperative","531":"WeLink Communications","690":"WeLink Communications","685":"Mediacom","686":"Mediacom","530":"Tohono O'odham Utility Authority","561":"Resound Networks","564":"Resound Networks","648":"Navajo Nation","718":"SpaceX (Starlink)","719":"SpaceX (Starlink)","724":"SpaceX (Starlink)","725":"SpaceX (Starlink)","726":"SpaceX (Starlink)","728":"SpaceX (Starlink)","729":"SpaceX (Starlink)","739":"SpaceX (Starlink)","740":"SpaceX (Starlink)","742":"SpaceX (Starlink)","744":"SpaceX (Starlink)","745":"SpaceX (Starlink)","746":"SpaceX (Starlink)","747":"SpaceX (Starlink)","749":"SpaceX (Starlink)","757":"SpaceX (Starlink)","760":"SpaceX (Starlink)","763":"SpaceX (Starlink)","765":"SpaceX (Starlink)","769":"SpaceX (Starlink)","771":"SpaceX (Starlink)","778":"SpaceX (Starlink)","779":"SpaceX (Starlink)","780":"SpaceX (Starlink)","782":"SpaceX (Starlink)","785":"SpaceX (Starlink)","790":"SpaceX (Starlink)","794":"SpaceX (Starlink)","797":"SpaceX (Starlink)","798":"SpaceX (Starlink)","694":"Comcast","695":"Comcast","696":"Comcast"};
+var azNameProv = {"Cochise P2":"TransWorld Network","Greenlee P1":"TransWorld Network","Greenlee P2":"TransWorld Network","Mohave P3":"TransWorld Network","Mohave P4":"TransWorld Network","Cochise P1":"TransWorld Network","Cochise P3":"TransWorld Network","Cochise P4":"TransWorld Network","Graham P1":"TransWorld Network","Graham P2":"TransWorld Network","Coconino P4":"Wecom","Pinal P4":"Wecom","Navajo P2":"Wecom","Navajo P3":"Wecom","Yavapai P1":"Wecom","La Paz P":"Wecom","Mohave P2":"Wecom","Mohave P5":"Wecom","Coconino P3":"Wecom","Pinal P3":"Wecom","Navajo P5":"Wecom","Maricopa P3":"Wecom","Gila P1":"Wecom","Yavapai P2":"Wecom","Coconino P2":"Wecom","Maricopa P2":"Wecom","Pinal P1":"Wecom","Pima P3":"Trico Electric Cooperative","Pima P2":"Trico Electric Cooperative","Maricopa P4":"WeLink Communications","Maricopa P5":"WeLink Communications","Santa Cruz P1":"Mediacom","Santa Cruz P2":"Mediacom","Tohono O'odham T":"Tohono O'odham Utility Authority","Yuma P2":"Resound Networks","Yuma P1":"Resound Networks","Navajo Nation T":"Navajo Nation","Coconino P1":"SpaceX (Starlink)","Apache P":"SpaceX (Starlink)","Mohave P1":"SpaceX (Starlink)","Fort McDowell T":"SpaceX (Starlink)","Maricopa P1":"SpaceX (Starlink)","Kaibab Indian T":"SpaceX (Starlink)","Havasupai T":"SpaceX (Starlink)","Hopi T":"SpaceX (Starlink)","Hualapai Indian T":"SpaceX (Starlink)","Gila P2":"SpaceX (Starlink)","Navajo P4":"SpaceX (Starlink)","Pinal P2":"SpaceX (Starlink)","Tonto Apache T":"SpaceX (Starlink)","Navajo P1":"SpaceX (Starlink)","Pima P4":"SpaceX (Starlink)","Pima P5":"SpaceX (Starlink)","Zuni T":"SpaceX (Starlink)","Pima P1":"SpaceX (Starlink)"};
 
 // ===== INITIALIZE MAP =====
 var map = L.map('map', {zoomControl: true}).setView([37.5, -95.0], 5);
@@ -206,28 +206,33 @@ streets.addTo(map);
 
 // ===== CREATE BEAD LAYERS =====
 var beadLayers = {};
+var pbfStatesOnMap = {}; // track which PBF states are currently on the map
 
-Object.keys(stateConfig).forEach(function(st) {
+function createPbfLayer(st) {
     var cfg = stateConfig[st];
-    if (cfg.isGeoJSON) return; // Skip GeoJSON states - handled separately
     var styles = {};
 
     styles[cfg.layerName] = function(properties) {
-        var info = masterBeadLookup(st, properties.fid || properties.name);
+        var lookupKey = (st === 'az') ? (properties.name || properties.fid) : (properties.fid || properties.name);
+        var info = masterBeadLookup(st, lookupKey);
         if (info) {
+            if (danetworkOnly && !isDanetwork(info.name)) {
+                return { fill: true, fillColor: '#ddd', fillOpacity: 0.08, stroke: true, color: '#ccc', weight: 0.5, opacity: 0.15 };
+            }
             return {
                 fill: true, fillColor: info.color, fillOpacity: 0.45,
                 stroke: true, color: info.color, weight: 1, opacity: 0.7
             };
         }
-        // Unattributed: use state color
+        if (danetworkOnly) {
+            return { fill: true, fillColor: '#ddd', fillOpacity: 0.08, stroke: true, color: '#ccc', weight: 0.5, opacity: 0.15 };
+        }
         return {
             fill: true, fillColor: cfg.color, fillOpacity: 0.25,
             stroke: true, color: cfg.color, weight: 1, opacity: 0.5
         };
     };
-    
-    // Hide labels layer
+
     styles[cfg.layerName + '_labels'] = { fill: false, stroke: false };
 
     var layer = L.vectorGrid.protobuf(cfg.tileUrl, {
@@ -238,10 +243,10 @@ Object.keys(stateConfig).forEach(function(st) {
         maxZoom: 16
     });
 
-    // Click handler
     layer.on('click', function(e) {
         var props = e.layer.properties;
-        var info = masterBeadLookup(st, props.fid || props.name);
+        var lookupKey = (st === 'az') ? (props.name || props.fid) : (props.fid || props.name);
+        var info = masterBeadLookup(st, lookupKey);
         var providerHtml = info
             ? '<span class="provider-tag" style="background:' + info.color + '">' + info.name + '</span>'
             : '<span style="color:#999;font-style:italic">Provider lookup pending</span>';
@@ -286,11 +291,20 @@ Object.keys(stateConfig).forEach(function(st) {
         L.popup({maxWidth: 320}).setLatLng(e.latlng).setContent(html).openOn(map);
     });
 
+    return layer;
+}
+
+Object.keys(stateConfig).forEach(function(st) {
+    var cfg = stateConfig[st];
+    if (cfg.isGeoJSON) return;
+    var layer = createPbfLayer(st);
     beadLayers[st] = layer;
 
-    // Add TX and OK by default, others off
     if (st === 'tx' || st === 'ok') {
         layer.addTo(map);
+        pbfStatesOnMap[st] = true;
+    } else {
+        pbfStatesOnMap[st] = false;
     }
 });
 
@@ -336,9 +350,14 @@ var geoJsonData = { mo: moCountyData, il: ilCountyData, nv: nvCountyData };
                 }
                 if (st === 'nv') {
                     var nvProv = nvCountyProv[props.GEOID];
+                    var nvDaProv = nvDanetworkCounties[props.GEOID];
                     if (nvProv) {
                         html += '<div class="stat-row"><span class="stat-label">Provider:</span><span class="stat-value"><span class="provider-tag" style="background:#FF6B35">' + nvProv + '</span></span></div>';
-                    } else if (stateSummaries.nv && stateSummaries.nv.providers.length > 0) {
+                    }
+                    if (nvDaProv) {
+                        html += '<div class="stat-row"><span class="stat-label">DAnetwork:</span><span class="stat-value"><span class="provider-tag" style="background:#E74C3C">' + nvDaProv + ' ($71K)</span></span></div>';
+                    }
+                    if (!nvProv && !nvDaProv && stateSummaries.nv && stateSummaries.nv.providers.length > 0) {
                         html += '<div style="margin-top:6px;font-weight:bold;font-size:11px">Top Providers in Nevada:</div>';
                         stateSummaries.nv.providers.slice(0, 5).forEach(function(p) {
                             var beamStr = (p.bead/1000000).toFixed(1);
@@ -386,6 +405,67 @@ statePanel.onAdd = function() {
 statePanel.addTo(map);
 
 // Network layers and layer control added after layer creation below
+
+// ===== DANETWORK FILTER =====
+var danetworkNames = ['AtLink','Wisper','Wisper Internet','Wisper ISP, LLC','WeLink','WeLink Communications','Sprocket','Sprocket Fiber','E8/AtLink'];
+// Counties with DAnetwork awards that aren't the primary provider in the county lookup
+var nvDanetworkCounties = {'32003': 'WeLink Communications'}; // Clark County - WeLink $71K award (2 locs)
+function isDanetwork(provName) {
+    if (!provName) return false;
+    for (var i = 0; i < danetworkNames.length; i++) {
+        if (provName.indexOf(danetworkNames[i]) !== -1) return true;
+    }
+    return false;
+}
+var danetworkOnly = false;
+
+var filterControl = L.control({position: 'topright'});
+filterControl.onAdd = function() {
+    var div = L.DomUtil.create('div', 'state-toggle');
+    div.style.marginTop = '4px';
+    div.innerHTML = '<label style="font-weight:bold;color:#1E2761;cursor:pointer"><input type="checkbox" id="dafilter"> DAnetwork Only</label>';
+    L.DomEvent.disableClickPropagation(div);
+    div.querySelector('#dafilter').addEventListener('change', function(e) {
+        danetworkOnly = e.target.checked;
+        applyDanetworkFilter();
+    });
+    return div;
+};
+filterControl.addTo(map);
+
+function applyDanetworkFilter() {
+    // GeoJSON states: restyle features
+    ['mo','il','nv'].forEach(function(st) {
+        if (!beadLayers[st]) return;
+        beadLayers[st].eachLayer(function(layer) {
+            var props = layer.feature.properties;
+            var prov = '';
+            if (st === 'mo') prov = props.dominant_provider || '';
+            if (st === 'il') prov = ilCountyProv[props.GEOID] || '';
+            if (st === 'nv') prov = nvCountyProv[props.GEOID] || '';
+            var isDA = isDanetwork(prov) || (st === 'nv' && !!nvDanetworkCounties[props.GEOID]);
+            if (danetworkOnly && !isDA) {
+                layer.setStyle({fillOpacity: 0.03, opacity: 0.1, fillColor: '#ccc', color: '#ccc'});
+            } else {
+                var cfg = stateConfig[st];
+                if (st === 'mo') {
+                    var color = moProvColors[props.dominant_provider] || cfg.color;
+                    layer.setStyle({fillColor: color, fillOpacity: 0.35, color: color, weight: 1.5, opacity: 0.6});
+                } else {
+                    layer.setStyle({fillColor: cfg.color, fillOpacity: 0.2, color: cfg.color, weight: 1.5, opacity: 0.5});
+                }
+            }
+        });
+    });
+    // PBF tile states: destroy and recreate layers to force fresh style evaluation
+    ['tx','ok','az'].forEach(function(st) {
+        if (!beadLayers[st]) return;
+        var wasOnMap = map.hasLayer(beadLayers[st]);
+        if (wasOnMap) map.removeLayer(beadLayers[st]);
+        beadLayers[st] = createPbfLayer(st);
+        if (wasOnMap) beadLayers[st].addTo(map);
+    });
+}
 
 // ===== LEGEND =====
 var legend = L.control({position: 'bottomright'});
