@@ -74,6 +74,7 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
 
   <div class="section-header">E8 Layers</div>
   <div class="layer-toggle"><label><input type="checkbox" id="togE8" checked onchange="toggleLayer('e8Towers')"> E8/AtLink Towers (20)</label></div>
+  <div class="layer-toggle"><label><input type="checkbox" id="togRF" checked onchange="toggleLayer('rfCoverage')"> RF Coverage (Tarana G1 5GHz)</label></div>
 
   <h3 style="margin-top:16px;">Target BSLs by City</h3>
   <table>
@@ -104,6 +105,9 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
     <div class="legend-item"><div class="legend-dot" style="background:#53d769;"></div>Distribution Points</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e74c3c;"></div>AT&T DSL near Sprocket</div>
     <div class="legend-item"><div class="legend-dot" style="background:#1ABC9C;"></div>E8/AtLink Towers (Tarana)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2ecc71;width:14px;height:14px;border-radius:50%;opacity:0.5;"></div>RF: High Capacity (&gt;100 Mbps)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f39c12;width:14px;height:14px;border-radius:50%;opacity:0.5;"></div>RF: Standard (50-100 Mbps)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e74c3c;width:14px;height:14px;border-radius:50%;opacity:0.5;"></div>RF: Edge (25-50 Mbps)</div>
   </div>
   
   <div class="footer">
@@ -1343,6 +1347,41 @@ e8Towers.forEach(function(t) {
 });
 layers.e8Towers = e8Layer;
 e8Layer.addTo(map);
+
+// RF Coverage - Tarana G1 5 GHz (UNII-3)
+// Link budget: EIRP 36 dBm, RN gain 13 dBi, fade 10 dB, clutter 8 dB
+var rfCoverageGroup = L.layerGroup();
+// High Capacity (>100 Mbps): 0.92 km / 0.57 mi (Rx threshold: -78 dBm)
+// Standard (50-100 Mbps): 1.84 km / 1.14 mi (Rx threshold: -84 dBm)
+// Edge (25-50 Mbps, LOS pref): 2.91 km / 1.81 mi (Rx threshold: -88 dBm)
+e8Towers.forEach(function(t) {
+  L.circle([t.lat, t.lng], {
+    radius: 2911,
+    color: '#e74c3c',
+    weight: 1,
+    fillColor: '#e74c3c',
+    fillOpacity: 0.08,
+    opacity: 0.4
+  }).bindPopup('<b>' + t.name + '</b><br>Edge (25-50 Mbps, LOS pref)<br>Radius: 1.8 mi (2.9 km)<br>Rx threshold: -88 dBm').addTo(rfCoverageGroup);
+  L.circle([t.lat, t.lng], {
+    radius: 1837,
+    color: '#f39c12',
+    weight: 1,
+    fillColor: '#f39c12',
+    fillOpacity: 0.1,
+    opacity: 0.4
+  }).bindPopup('<b>' + t.name + '</b><br>Standard (50-100 Mbps)<br>Radius: 1.1 mi (1.8 km)<br>Rx threshold: -84 dBm').addTo(rfCoverageGroup);
+  L.circle([t.lat, t.lng], {
+    radius: 921,
+    color: '#2ecc71',
+    weight: 1,
+    fillColor: '#2ecc71',
+    fillOpacity: 0.12,
+    opacity: 0.4
+  }).bindPopup('<b>' + t.name + '</b><br>High Capacity (>100 Mbps)<br>Radius: 0.6 mi (0.9 km)<br>Rx threshold: -78 dBm').addTo(rfCoverageGroup);
+});
+layers.rfCoverage = rfCoverageGroup;
+rfCoverageGroup.addTo(map);
 
 function toggleLayer(name) {
   if(map.hasLayer(layers[name])) {
