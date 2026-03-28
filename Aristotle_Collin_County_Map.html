@@ -81,6 +81,116 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
   <div class="layer-toggle"><label><input type="checkbox" id="togAugZones" checked onchange="toggleLayer('augDesign')"> Opportunity Zones (5)</label></div>
   <div class="layer-toggle"><label><input type="checkbox" id="togAugRoutes" checked onchange="toggleLayer('augRoutes')"> Proposed Extensions</label></div>
   <div class="layer-toggle"><label><input type="checkbox" id="togAugDist" checked onchange="toggleLayer('augDistPts')"> Proposed Dist Points (312)</label></div>
+  <div class="section-header" style="color:#00bfff;cursor:pointer" onclick="document.getElementById('bomPanel').style.display=document.getElementById('bomPanel').style.display==='none'?'block':'none'">AUGMENTED DESIGN BOM ▾</div>
+  <div id="bomPanel" style="display:block;font-size:11px;color:#ccc;margin-top:4px">
+    <table style="width:100%;border-collapse:collapse;font-size:11px;color:#ccc">
+      <tr style="border-bottom:1px solid #333">
+        <th style="text-align:left;padding:2px 4px;color:#00bfff">Zone</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff">BSLs</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff">Mi</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff">FDH</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff">CapEx</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff">$/Pass</th>
+      </tr>
+      <tr style="border-bottom:1px solid #222">
+        <td style="padding:2px 4px;color:#00bfff">Princeton</td>
+        <td style="text-align:right;padding:2px 4px">+2,370</td>
+        <td style="text-align:right;padding:2px 4px">15</td>
+        <td style="text-align:right;padding:2px 4px">8</td>
+        <td style="text-align:right;padding:2px 4px">$2466K</td>
+        <td style="text-align:right;padding:2px 4px">$1,041</td>
+      </tr>
+      <tr style="border-bottom:1px solid #222">
+        <td style="padding:2px 4px;color:#ff6b35">Farmersville</td>
+        <td style="text-align:right;padding:2px 4px">+2,170</td>
+        <td style="text-align:right;padding:2px 4px">12</td>
+        <td style="text-align:right;padding:2px 4px">7</td>
+        <td style="text-align:right;padding:2px 4px">$2186K</td>
+        <td style="text-align:right;padding:2px 4px">$1,007</td>
+      </tr>
+      <tr style="border-bottom:1px solid #222">
+        <td style="padding:2px 4px;color:#9b59b6">Blue</td>
+        <td style="text-align:right;padding:2px 4px">+1,120</td>
+        <td style="text-align:right;padding:2px 4px">8</td>
+        <td style="text-align:right;padding:2px 4px">4</td>
+        <td style="text-align:right;padding:2px 4px">$1210K</td>
+        <td style="text-align:right;padding:2px 4px">$1,080</td>
+      </tr>
+      <tr style="border-bottom:1px solid #222">
+        <td style="padding:2px 4px;color:#2ecc71">McKinney</td>
+        <td style="text-align:right;padding:2px 4px">+1,117</td>
+        <td style="text-align:right;padding:2px 4px">10</td>
+        <td style="text-align:right;padding:2px 4px">4</td>
+        <td style="text-align:right;padding:2px 4px">$1290K</td>
+        <td style="text-align:right;padding:2px 4px">$1,155</td>
+      </tr>
+      <tr style="border-bottom:1px solid #222">
+        <td style="padding:2px 4px;color:#f1c40f">Nevada</td>
+        <td style="text-align:right;padding:2px 4px">+1,536</td>
+        <td style="text-align:right;padding:2px 4px">10</td>
+        <td style="text-align:right;padding:2px 4px">5</td>
+        <td style="text-align:right;padding:2px 4px">$1617K</td>
+        <td style="text-align:right;padding:2px 4px">$1,053</td>
+      </tr>
+      <tr style="border-top:2px solid #00bfff;font-weight:bold">
+        <td style="padding:3px 4px;color:#00bfff">TOTAL</td>
+        <td style="text-align:right;padding:3px 4px;color:#fff">+8,313</td>
+        <td style="text-align:right;padding:3px 4px;color:#fff">55</td>
+        <td style="text-align:right;padding:3px 4px;color:#fff">28</td>
+        <td style="text-align:right;padding:3px 4px;color:#fff">$8.8M</td>
+        <td style="text-align:right;padding:3px 4px;color:#fff">$1,055</td>
+      </tr>
+    </table>
+    <div style="margin-top:8px;padding:6px;background:#0a2948;border-radius:4px;border:1px solid #1a3a5c">
+      <div style="font-weight:bold;color:#00bfff;margin-bottom:4px">COMBINED DESIGN</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Total Passings:</span><span style="color:#fff">13,366</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Total Plant:</span><span style="color:#fff">561 mi</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Passings/Mile:</span><span style="color:#fff">23.8</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>OLT Ports (new):</span><span style="color:#fff">21</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Splitters (1:32):</span><span style="color:#fff">112</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>FDH Cabinets:</span><span style="color:#fff">28</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>ONTs (35% take):</span><span style="color:#fff">2,907</span>
+      </div>
+    </div>
+    <div style="margin-top:6px;padding:6px;background:#0a2a1a;border-radius:4px;border:1px solid #1a4a2c">
+      <div style="font-weight:bold;color:#2ecc71;margin-bottom:4px">REVENUE PROJECTION</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Augmented CapEx:</span><span style="color:#fff">$8.8M</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Subscribers (35%):</span><span style="color:#fff">2,909</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Annual Revenue:</span><span style="color:#fff">$2.4M</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span>Payback:</span><span style="color:#2ecc71;font-weight:bold">3.6 yrs</span>
+      </div>
+    </div>
+    <div style="margin-top:6px;padding:6px;background:#2a1a0a;border-radius:4px;border:1px solid #4a3a1c">
+      <div style="font-weight:bold;color:#f39c12;margin-bottom:4px">EQUIPMENT SUMMARY</div>
+      <div style="font-size:10px;line-height:1.5">
+        Fiber: 288ct feeder, 144ct distribution<br>
+        OLT: Existing chassis, 21 new GPON ports<br>
+        Splitters: 112x 1:32 in 28 FDH cabs<br>
+        ONT: Calix 801G equiv (2,907 units)<br>
+        Aerial/Buried: ~45%/55% avg mix
+      </div>
+    </div>
+  </div>
 
   <h3 style="margin-top:16px;">Target BSLs by City</h3>
   <table>
@@ -1413,7 +1523,7 @@ L.circle([33.1796, -96.4984], {
   fillColor: '#00bfff',
   fillOpacity: 0.06,
   opacity: 0.7
-}).bindPopup('<b>OPPORTUNITY ZONE: Princeton Core</b><br>Priority: 1<br>Est. Additional BSLs: 2,370<br>New Route Miles: ~15<br>Nearest OLT: OLT-9 (2.1 mi)<br><hr style=&#39;margin:4px 0&#39;>Highest priority. US-380 growth corridor. New subdivisions. Fiber routes already present.').addTo(augDesignGroup);
+}).bindPopup('<b>OPPORTUNITY ZONE: Princeton Core</b><br>Priority: 1<br>Est. Additional BSLs: 2,370<br>New Plant: 15 mi (4.5 feeder + 10.5 dist)<br>FDH Cabinets: 8 (32 splitters)<br>OLT Ports: 6<br>ONTs (35%): 829<br>CapEx: $2466K ($1,041/passing)<br><hr style=&#39;margin:4px 0&#39;>Feeds from OLT-9. US-380 corridor has ROW access. Many new subdivisions have conduit stubs.').addTo(augDesignGroup);
 L.marker([33.1796, -96.4984], {
   icon: L.divIcon({
     className: 'zone-label',
@@ -1527,7 +1637,7 @@ L.circle([33.1631, -96.36], {
   fillColor: '#ff6b35',
   fillOpacity: 0.06,
   opacity: 0.7
-}).bindPopup('<b>OPPORTUNITY ZONE: Farmersville Core</b><br>Priority: 2<br>Est. Additional BSLs: 2,170<br>New Route Miles: ~12<br>Nearest OLT: OLT-2 (1.8 mi)<br><hr style=&#39;margin:4px 0&#39;>Town center and adjacent developments. OLTs 2 & 3 have capacity.').addTo(augDesignGroup);
+}).bindPopup('<b>OPPORTUNITY ZONE: Farmersville Core</b><br>Priority: 2<br>Est. Additional BSLs: 2,170<br>New Plant: 12 mi (3.5 feeder + 8.5 dist)<br>FDH Cabinets: 7 (28 splitters)<br>OLT Ports: 5<br>ONTs (35%): 759<br>CapEx: $2186K ($1,007/passing)<br><hr style=&#39;margin:4px 0&#39;>Feeds from OLT-2 and OLT-3. Town center is mostly aerial. ETJ extensions buried.').addTo(augDesignGroup);
 L.marker([33.1631, -96.36], {
   icon: L.divIcon({
     className: 'zone-label',
@@ -1608,7 +1718,7 @@ L.circle([33.296, -96.403], {
   fillColor: '#9b59b6',
   fillOpacity: 0.06,
   opacity: 0.7
-}).bindPopup('<b>OPPORTUNITY ZONE: Blue Ridge / Anna</b><br>Priority: 3<br>Est. Additional BSLs: 1,120<br>New Route Miles: ~8<br>Nearest OLT: OLT-5 (0.8 mi)<br><hr style=&#39;margin:4px 0&#39;>Dense BEAD cluster. Extend laterals to adjacent non-BEAD homes. Near-zero incremental plant.').addTo(augDesignGroup);
+}).bindPopup('<b>OPPORTUNITY ZONE: Blue Ridge / Anna</b><br>Priority: 3<br>Est. Additional BSLs: 1,120<br>New Plant: 8 mi (2.0 feeder + 6.0 dist)<br>FDH Cabinets: 4 (16 splitters)<br>OLT Ports: 3<br>ONTs (35%): 392<br>CapEx: $1210K ($1,080/passing)<br><hr style=&#39;margin:4px 0&#39;>Feeds from OLT-5. Existing BEAD plant is dense here - mostly lateral extensions.').addTo(augDesignGroup);
 L.marker([33.296, -96.403], {
   icon: L.divIcon({
     className: 'zone-label',
@@ -1670,7 +1780,7 @@ L.circle([33.2034, -96.57], {
   fillColor: '#2ecc71',
   fillOpacity: 0.06,
   opacity: 0.7
-}).bindPopup('<b>OPPORTUNITY ZONE: McKinney East</b><br>Priority: 4<br>Est. Additional BSLs: 1,117<br>New Route Miles: ~10<br>Nearest OLT: OLT-7 (0.3 mi)<br><hr style=&#39;margin:4px 0&#39;>East McKinney ETJ. Heavy existing fiber presence. Selective extensions to subdivisions.').addTo(augDesignGroup);
+}).bindPopup('<b>OPPORTUNITY ZONE: McKinney East</b><br>Priority: 4<br>Est. Additional BSLs: 1,117<br>New Plant: 10 mi (3.0 feeder + 7.0 dist)<br>FDH Cabinets: 4 (16 splitters)<br>OLT Ports: 3<br>ONTs (35%): 390<br>CapEx: $1290K ($1,155/passing)<br><hr style=&#39;margin:4px 0&#39;>Feeds from OLT-7. Heavy existing fiber presence. Selective fill-in.').addTo(augDesignGroup);
 L.marker([33.2034, -96.57], {
   icon: L.divIcon({
     className: 'zone-label',
@@ -1727,7 +1837,7 @@ L.circle([33.03, -96.43], {
   fillColor: '#f1c40f',
   fillOpacity: 0.06,
   opacity: 0.7
-}).bindPopup('<b>OPPORTUNITY ZONE: Nevada / Lavon Growth</b><br>Priority: 5<br>Est. Additional BSLs: 1,536<br>New Route Miles: ~10<br>Nearest OLT: OLT-1 (2.3 mi)<br><hr style=&#39;margin:4px 0&#39;>Growth corridor south of US-380. OLT-1 positioned well. Lavon Lake development.').addTo(augDesignGroup);
+}).bindPopup('<b>OPPORTUNITY ZONE: Nevada / Lavon Growth</b><br>Priority: 5<br>Est. Additional BSLs: 1,536<br>New Plant: 10 mi (3.0 feeder + 7.0 dist)<br>FDH Cabinets: 5 (20 splitters)<br>OLT Ports: 4<br>ONTs (35%): 537<br>CapEx: $1617K ($1,053/passing)<br><hr style=&#39;margin:4px 0&#39;>Feeds from OLT-1. Growth corridor with Lavon Lake development driving demand.').addTo(augDesignGroup);
 L.marker([33.03, -96.43], {
   icon: L.divIcon({
     className: 'zone-label',
