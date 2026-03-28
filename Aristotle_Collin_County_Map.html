@@ -56,6 +56,10 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
     <div class="stat-card navy"><div class="num">87</div><div class="label">Sprocket Segments</div></div>
     <div class="stat-card"><div class="num">1,070</div><div class="label">AT&T DSL Hexes</div></div>
   </div>
+  <div class="stat-grid">
+    <div class="stat-card green"><div class="num">20</div><div class="label">E8/AtLink Towers</div></div>
+    <div class="stat-card"><div class="num">Tarana</div><div class="label">Equipment</div></div>
+  </div>
 
   <div class="section-header">Aristotle Layers</div>
   <div class="layer-toggle"><label><input type="checkbox" id="togRoutes" checked onchange="toggleLayer('routes')"> Fiber Routes</label></div>
@@ -67,6 +71,9 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
   <div class="section-header">Sprocket Layers</div>
   <div class="layer-toggle"><label><input type="checkbox" id="togSprocketSeg" checked onchange="toggleLayer('sprocketSeg')"> Sprocket Fiber Segments</label></div>
   <div class="layer-toggle"><label><input type="checkbox" id="togSprocketATT" checked onchange="toggleLayer('sprocketATT')"> AT&T DSL near Sprocket</label></div>
+
+  <div class="section-header">E8 Layers</div>
+  <div class="layer-toggle"><label><input type="checkbox" id="togE8" checked onchange="toggleLayer('e8Towers')"> E8/AtLink Towers (20)</label></div>
 
   <h3 style="margin-top:16px;">Target BSLs by City</h3>
   <table>
@@ -96,6 +103,7 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
     <div class="legend-item"><div class="legend-dot" style="background:#ffb74d;"></div>Underserved BSLs</div>
     <div class="legend-item"><div class="legend-dot" style="background:#53d769;"></div>Distribution Points</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e74c3c;"></div>AT&T DSL near Sprocket</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1ABC9C;"></div>E8/AtLink Towers (Tarana)</div>
   </div>
   
   <div class="footer">
@@ -1325,6 +1333,16 @@ L.circleMarker([32.69691371125567,-97.2846546040731],{color:'#e74c3c',fillColor:
 L.circleMarker([32.86733579357249,-97.49867200610915],{color:'#e74c3c',fillColor:'#e74c3c',fillOpacity:0.6,opacity:0.8,radius:3,weight:1,fill:true}).bindPopup('<b>AT&amp;T DSL near Sprocket</b><br>DSL: 1 locations').addTo(sprocket_att_fg)
 layers.sprocketATT = sprocket_att_fg;
 sprocket_att_fg.addTo(map);
+
+var e8Layer = L.layerGroup();
+var e8Towers = [{"lat": 32.9691, "lng": -97.4099, "name": "Yukon"}, {"lat": 33.155, "lng": -96.38, "name": "Avondale-CTDR-S0215F"}, {"lat": 33.6559, "lng": -97.0305, "name": "Crowley"}, {"lat": 33.1394, "lng": -96.0997, "name": "Gainsville-Callisburg"}, {"lat": 33.1825, "lng": -96.4823, "name": "Midlothian"}, {"lat": 33.0577, "lng": -97.466, "name": "Mineral Wells"}, {"lat": 32.9438, "lng": -96.7359, "name": "Princeton"}, {"lat": 33.6002, "lng": -97.1328, "name": "Rhome-CTDR-166501A"}, {"lat": 32.6753, "lng": -97.7305, "name": "Annetta South-Monty Hankins"}, {"lat": 32.5367, "lng": -97.413, "name": "Annetta South"}, {"lat": 32.4134, "lng": -97.2556, "name": "Farmersville"}, {"lat": 32.8278, "lng": -97.4859, "name": "Glenwood Cemetery"}, {"lat": 32.7657, "lng": -96.28, "name": "Greenville (Lee)"}, {"lat": 32.4093, "lng": -96.9552, "name": "Lakeside"}, {"lat": 32.811, "lng": -98.1036, "name": "Liston Farms"}, {"lat": 32.4706, "lng": -96.8574, "name": "Richardson"}, {"lat": 32.7298, "lng": -97.8834, "name": "South Gainesville"}, {"lat": 32.8, "lng": -97.7252, "name": "Waxahachie"}, {"lat": 32.9208, "lng": -98.0758, "name": "Weatherford-I20/HWY80"}, {"lat": 32.3956, "lng": -97.7204, "name": "White Settlement"}];
+e8Towers.forEach(function(t) {
+  L.circleMarker([t.lat, t.lng], {
+    radius: 8, fillColor:'#1ABC9C', color:'#0E6655', weight:2, fillOpacity:0.9
+  }).bindPopup('<b>E8/AtLink Tower</b><br>' + t.name + '<br>Equipment: Tarana<br>Lat: ' + t.lat.toFixed(5) + '<br>Lng: ' + t.lng.toFixed(5)).addTo(e8Layer);
+});
+layers.e8Towers = e8Layer;
+e8Layer.addTo(map);
 
 function toggleLayer(name) {
   if(map.hasLayer(layers[name])) {
