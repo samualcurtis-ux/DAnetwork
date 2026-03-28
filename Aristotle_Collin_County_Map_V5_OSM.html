@@ -52,7 +52,7 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
 
   <div class="stat-grid">
     <div class="stat-card"><div class="num">14,349</div><div class="label">Served BSLs (All)</div></div>
-    <div class="stat-card purple"><div class="num">4.5 avg</div><div class="label">Providers/BSL</div></div>
+    <div class="stat-card purple"><div class="num" style="font-size:16px">4.5 total</div><div class="num" style="font-size:14px;color:#e74c3c">0-2 wired</div><div class="label">Providers/BSL</div></div>
     <div class="stat-card navy"><div class="num">1,838</div><div class="label">Unsrvd+Undrsrvd</div></div>
     <div class="stat-card"><div class="num">5,053</div><div class="label">BEAD Targets</div></div>
   </div>
@@ -88,54 +88,102 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
     <table style="width:100%;border-collapse:collapse;font-size:11px;color:#ccc">
       <tr style="border-bottom:1px solid #333">
         <th style="text-align:left;padding:2px 4px;color:#00bfff">Zone</th>
-        <th style="text-align:right;padding:2px 4px;color:#00bfff">Served BSLs</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff">Served</th>
         <th style="text-align:right;padding:2px 4px;color:#00bfff">Avg Prov</th>
-        <th style="text-align:right;padding:2px 4px;color:#00bfff">5+ Prov</th>
+        <th style="text-align:right;padding:2px 4px;color:#00bfff;font-size:9px">Wired</th>
         <th style="text-align:right;padding:2px 4px;color:#00bfff">Est. TR</th>
       </tr>
       <tr style="border-bottom:1px solid #222">
         <td style="padding:2px 4px;color:#00bfff">Princeton</td>
         <td style="text-align:right;padding:2px 4px">4,785</td>
         <td style="text-align:right;padding:2px 4px">4.2</td>
-        <td style="text-align:right;padding:2px 4px">39%</td>
-        <td style="text-align:right;padding:2px 4px;color:#f39c12">18-25%</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">1-2</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">22-30%</td>
       </tr>
       <tr style="border-bottom:1px solid #222">
         <td style="padding:2px 4px;color:#ff6b35">Farmersville</td>
         <td style="text-align:right;padding:2px 4px">2,294</td>
         <td style="text-align:right;padding:2px 4px">4.7</td>
-        <td style="text-align:right;padding:2px 4px">54%</td>
-        <td style="text-align:right;padding:2px 4px;color:#f39c12">18-25%</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">0-1</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">22-30%</td>
       </tr>
       <tr style="border-bottom:1px solid #222">
         <td style="padding:2px 4px;color:#9b59b6">Blue Ridge-Melissa</td>
         <td style="text-align:right;padding:2px 4px">2,277</td>
         <td style="text-align:right;padding:2px 4px">4.0</td>
-        <td style="text-align:right;padding:2px 4px">37%</td>
-        <td style="text-align:right;padding:2px 4px;color:#f39c12">18-25%</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">0-1</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">22-30%</td>
       </tr>
       <tr style="border-bottom:1px solid #222">
         <td style="padding:2px 4px;color:#2ecc71">McKinney</td>
         <td style="text-align:right;padding:2px 4px">1,387</td>
         <td style="text-align:right;padding:2px 4px">3.7</td>
-        <td style="text-align:right;padding:2px 4px">24%</td>
-        <td style="text-align:right;padding:2px 4px;color:#2ecc71">22-30%</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">0-1</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">25-33%</td>
       </tr>
       <tr style="border-bottom:1px solid #222">
         <td style="padding:2px 4px;color:#f1c40f">Nevada/Lavon</td>
         <td style="text-align:right;padding:2px 4px">2,699</td>
-        <td style="text-align:right;padding:2px 4px;color:#e74c3c">5.6</td>
-        <td style="text-align:right;padding:2px 4px;color:#e74c3c">75%</td>
-        <td style="text-align:right;padding:2px 4px;color:#e74c3c">15-20%</td>
+        <td style="text-align:right;padding:2px 4px;color:#f39c12">5.6</td>
+        <td style="text-align:right;padding:2px 4px;color:#2ecc71">0-1</td>
+        <td style="text-align:right;padding:2px 4px;color:#f39c12">20-25%</td>
       </tr>
       <tr style="border-top:2px solid #00bfff;font-weight:bold">
         <td style="padding:3px 4px;color:#00bfff">TOTAL</td>
         <td style="text-align:right;padding:3px 4px;color:#fff">13,442</td>
         <td style="text-align:right;padding:3px 4px;color:#fff">4.5</td>
-        <td style="text-align:right;padding:3px 4px;color:#fff">47%</td>
-        <td style="text-align:right;padding:3px 4px;color:#f39c12">20-25%</td>
+        <td style="text-align:right;padding:3px 4px;color:#2ecc71">0-2</td>
+        <td style="text-align:right;padding:3px 4px;color:#2ecc71">22-28%</td>
       </tr>
     </table>
+    <div style="margin-top:8px;padding:6px;background:#0a1a2e;border-radius:4px;border:1px solid #2ecc71">
+      <div style="font-weight:bold;color:#2ecc71;margin-bottom:4px">COMPETITIVE ANALYSIS (BDC Jun 2025)</div>
+      <div style="font-size:10px;color:#888;margin-bottom:4px">The 4.5 avg providers/BSL is overwhelmingly FWA and satellite. Zero fiber providers in the footprint.</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px;color:#ccc">
+        <tr style="border-bottom:1px solid #1a3a5c">
+          <th style="text-align:left;padding:2px 3px;color:#2ecc71;font-size:9px">Technology</th>
+          <th style="text-align:right;padding:2px 3px;color:#2ecc71;font-size:9px">Per BSL</th>
+          <th style="text-align:left;padding:2px 3px;color:#2ecc71;font-size:9px">Providers</th>
+          <th style="text-align:left;padding:2px 3px;color:#2ecc71;font-size:9px">Source</th>
+        </tr>
+        <tr style="border-bottom:1px solid #0a1a2e">
+          <td style="padding:2px 3px;color:#e74c3c;font-weight:bold">Fiber (FTTP)</td>
+          <td style="text-align:right;padding:2px 3px;color:#e74c3c;font-weight:bold">0</td>
+          <td style="padding:2px 3px">None</td>
+          <td style="padding:2px 3px;color:#666">Spot-check (n=3)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #0a1a2e">
+          <td style="padding:2px 3px">Cable (CATV)</td>
+          <td style="text-align:right;padding:2px 3px">0-1</td>
+          <td style="padding:2px 3px">Spectrum (Princeton only)</td>
+          <td style="padding:2px 3px;color:#666">Spot-check (n=3)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #0a1a2e">
+          <td style="padding:2px 3px">Copper (DSL)</td>
+          <td style="text-align:right;padding:2px 3px">0-1</td>
+          <td style="padding:2px 3px">AT&amp;T (25/5-50/10 typ.)</td>
+          <td style="padding:2px 3px;color:#666">BDC bulk (48M rows)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #1a3a5c;background:#0d2a1a">
+          <td style="padding:2px 3px;color:#2ecc71;font-weight:bold">WIRED TOTAL</td>
+          <td style="text-align:right;padding:2px 3px;color:#2ecc71;font-weight:bold">0-2</td>
+          <td colspan="2" style="padding:2px 3px;color:#2ecc71">No fiber anywhere. 0-1 cable. 0-1 copper.</td>
+        </tr>
+        <tr style="border-bottom:1px solid #0a1a2e">
+          <td style="padding:2px 3px;color:#666">FWA</td>
+          <td style="text-align:right;padding:2px 3px;color:#666">~1-5</td>
+          <td style="padding:2px 3px;color:#666">T-Mobile, Rise, Nextlink, etc.</td>
+          <td style="padding:2px 3px;color:#666">Spot-check</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 3px;color:#666">Satellite</td>
+          <td style="text-align:right;padding:2px 3px;color:#666">~3</td>
+          <td style="padding:2px 3px;color:#666">Starlink, Hughes, Viasat</td>
+          <td style="padding:2px 3px;color:#666">Spot-check</td>
+        </tr>
+      </table>
+      <div style="font-size:9px;color:#888;margin-top:4px;line-height:1.4">Methodology: FCC BDC Jun 2025 data. Copper from TX statewide bulk download (3M rows, filtered to Collin County block_geoid 48085). Cable/fiber from BSL-level spot-checks on broadbandmap.fcc.gov (n=3: Princeton, Farmersville, McKinney). FWA/satellite derived. Take-rate estimates revised upward from V5 base: fiber-starved market with only DSL/FWA competition supports higher penetration than raw provider count suggests.</div>
+    </div>
     <div style="margin-top:8px;padding:6px;background:#0a2948;border-radius:4px;border:1px solid #1a3a5c">
       <div style="font-weight:bold;color:#00bfff;margin-bottom:4px">V5 CAPEX (Mid, 25% TR)</div>
       <div style="font-size:10px;color:#888;margin-bottom:4px;font-style:italic">G = geometry-derived | R = OSM road-routed | E = estimated</div>
@@ -209,8 +257,8 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
         &nbsp;&nbsp;Flower pot data shows avg 1.08 unit/pot, inconsistent with 1:32 GPON split assumed here. If actual split is 1:16, FDH count could roughly double to ~164 and OLT port count increases proportionally. <span style="color:#f39c12">Data room ask.</span></div>
         <div style="margin-bottom:4px"><span style="color:#e74c3c;font-weight:bold">3. OLT capacity</span><br>
         &nbsp;&nbsp;9 OLTs serve 5,054 existing distribution points. Adding 82 FDHs requires ~82 new PON ports (at 1:32) or ~164 ports (at 1:16). This may require 1-3 additional chassis at $150-250K each. Current $288K estimate covers base case only. <span style="color:#f39c12">Estimated, not confirmed.</span></div>
-        <div style="margin-bottom:4px"><span style="color:#e74c3c;font-weight:bold">4. Competitive intensity</span><br>
-        &nbsp;&nbsp;4.5 avg providers per served BSL; 47% have 5+ providers. Take-rate assumptions must reflect this. Nevada-Lavon is highest risk (5.6 avg, 75% with 5+).</div>
+        <div style="margin-bottom:4px"><span style="color:#2ecc71;font-weight:bold">4. Competitive intensity (UPDATED)</span><br>
+        &nbsp;&nbsp;4.5 avg providers/BSL is overwhelmingly FWA and satellite. BDC technology decomposition confirms <span style="color:#2ecc71">zero fiber</span> providers and 0-2 wired competitors (AT&amp;T DSL + Spectrum cable in limited areas). Market is fiber-starved. Take-rate estimates revised upward. Spot-check n=3; full bulk validation recommended before LOI.</div>
         <div style="margin-bottom:4px"><span style="color:#e74c3c;font-weight:bold">5. FDH placements</span><br>
         &nbsp;&nbsp;82 FDH locations are density-grid modeled from BSL cluster centroids, not field-sited. Actual locations depend on ROW, utility access, and permitting.</div>
         <div style="margin-bottom:4px"><span style="color:#e74c3c;font-weight:bold">6. OSM road coverage</span><br>
@@ -274,8 +322,8 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
   </div>
   
   <div class="footer">
-    Data: Sprocket Networks / Aristotle GeoPackage + FCC Fabric Dec 2025<br>
-    V5 Corrective Pass | Generated 2026-03-28
+    Data: Sprocket Networks / Aristotle GeoPackage + FCC Fabric Dec 2025 + FCC BDC Jun 2025<br>
+    V5 Corrective Pass + Competitive Analysis | Generated 2026-03-28
   </div>
 </div>
 
