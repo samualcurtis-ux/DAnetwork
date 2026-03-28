@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBRS PAL License Analysis</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; }
+  
+  .header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 24px 32px; border-bottom: 1px solid #334155; }
+  .header h1 { font-size: 22px; font-weight: 600; color: #f8fafc; margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: #94a3b8; }
+  
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 80px); }
+  
+  .map-panel { position: relative; }
+  #map { width: 100%; height: 100%; min-height: 600px; }
+  
+  .data-panel { padding: 24px; overflow-y: auto; max-height: calc(100vh - 80px); background: #1e293b; }
+  
+  .county-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .county-card h2 { font-size: 16px; font-weight: 600; color: #f8fafc; margin-bottom: 4px; }
+  .county-card .meta { font-size: 12px; color: #64748b; margin-bottom: 16px; }
+  
+  .spectrum-bar { display: flex; height: 40px; border-radius: 6px; overflow: hidden; margin-bottom: 12px; gap: 2px; }
+  .spectrum-bar .segment { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+  
+  .license-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .license-table th { text-align: left; padding: 6px 8px; color: #94a3b8; font-weight: 500; border-bottom: 1px solid #334155; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .license-table td { padding: 6px 8px; border-bottom: 1px solid #1e293b; }
+  .license-table tr:hover td { background: #1e293b; }
+  
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  
+  .summary-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .summary-card h3 { font-size: 14px; font-weight: 600; color: #f8fafc; margin-bottom: 12px; }
+  .stat-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+  .stat-label { color: #94a3b8; }
+  .stat-value { color: #f8fafc; font-weight: 500; }
+  
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  
+  .note-box { background: #172554; border: 1px solid #1e40af; border-radius: 6px; padding: 12px; margin-top: 16px; font-size: 12px; color: #93c5fd; line-height: 1.5; }
+  .note-box strong { color: #bfdbfe; }
+
+  /* Colors for entities */
+  .color-verizon { background: #dc2626; }
+  .color-cox { background: #f59e0b; }
+  .color-dish { background: #8b5cf6; }
+  .color-charter { background: #06b6d4; }
+  .color-edison { background: #22c55e; }
+  
+  @media (max-width: 1024px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .data-panel { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>CBRS Priority Access License (PAL) Analysis</h1>
+  <div class="subtitle">FCC Auction 105 Results | 3550-3650 MHz | Maricopa County AZ, Los Angeles County CA, Clark County NV | Data: FCC PRS, March 2026</div>
+</div>
+
+<div class="main-grid">
+  <div class="map-panel">
+    <div id="map"></div>
+  </div>
+  
+  <div class="data-panel">
+    
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot color-verizon"></div>Verizon</div>
+      <div class="legend-item"><div class="legend-dot color-cox"></div>Cox Communications</div>
+      <div class="legend-item"><div class="legend-dot color-dish"></div>DISH/EchoStar (Wetterhorn)</div>
+      <div class="legend-item"><div class="legend-dot color-charter"></div>Charter (Spectrum Wireless)</div>
+      <div class="legend-item"><div class="legend-dot color-edison"></div>SoCal Edison</div>
+    </div>
+
+    <!-- MARICOPA -->
+    <div class="county-card">
+      <h2>Maricopa County, AZ (Phoenix)</h2>
+      <div class="meta">FIPS 04-013 | Pop. ~4.5M | 7 PALs @ $17,830,000 each | Total: $124,810,000</div>
+      <div class="spectrum-bar">
+        <div class="segment color-cox" style="flex:2">Cox (20 MHz)</div>
+        <div class="segment color-verizon" style="flex:3">Verizon (30 MHz)</div>
+        <div class="segment color-dish" style="flex:2">DISH (20 MHz)</div>
+      </div>
+      <table class="license-table">
+        <thead><tr><th>Channel</th><th>Freq (MHz)</th><th>License ID</th><th>Holder</th><th>Gross Price</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>3550-3560</td><td>PL-D04013-P1</td><td><span class="tag color-cox">Cox Communications</span></td><td>$17,830,000</td></tr>
+          <tr><td>P2</td><td>3560-3570</td><td>PL-D04013-P2</td><td><span class="tag color-cox">Cox Communications</span></td><td>$17,830,000</td></tr>
+          <tr><td>P3</td><td>3570-3580</td><td>PL-D04013-P3</td><td><span class="tag color-verizon">Verizon</span></td><td>$17,830,000</td></tr>
+          <tr><td>P4</td><td>3580-3590</td><td>PL-D04013-P4</td><td><span class="tag color-verizon">Verizon</span></td><td>$17,830,000</td></tr>
+          <tr><td>P5</td><td>3590-3600</td><td>PL-D04013-P5</td><td><span class="tag color-verizon">Verizon</span></td><td>$17,830,000</td></tr>
+          <tr><td>P6</td><td>3600-3610</td><td>PL-D04013-P6</td><td><span class="tag color-dish">DISH (Wetterhorn)</span></td><td>$17,830,000</td></tr>
+          <tr><td>P7</td><td>3610-3620</td><td>PL-D04013-P7</td><td><span class="tag color-dish">DISH (Wetterhorn)</span></td><td>$17,830,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LOS ANGELES -->
+    <div class="county-card">
+      <h2>Los Angeles County, CA</h2>
+      <div class="meta">FIPS 06-037 | Pop. ~10.0M | 7 PALs @ $52,071,881 each | Total: $364,503,167</div>
+      <div class="spectrum-bar">
+        <div class="segment color-edison" style="flex:1">Edison (10)</div>
+        <div class="segment color-charter" style="flex:2">Charter (20 MHz)</div>
+        <div class="segment color-verizon" style="flex:3">Verizon (30 MHz)</div>
+        <div class="segment color-dish" style="flex:1">DISH (10)</div>
+      </div>
+      <table class="license-table">
+        <thead><tr><th>Channel</th><th>Freq (MHz)</th><th>License ID</th><th>Holder</th><th>Gross Price</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>3550-3560</td><td>PL-D06037-P1</td><td><span class="tag color-edison">SoCal Edison</span></td><td>$52,071,881</td></tr>
+          <tr><td>P2</td><td>3560-3570</td><td>PL-D06037-P2</td><td><span class="tag color-charter">Charter (Spectrum)</span></td><td>$52,071,881</td></tr>
+          <tr><td>P3</td><td>3570-3580</td><td>PL-D06037-P3</td><td><span class="tag color-charter">Charter (Spectrum)</span></td><td>$52,071,881</td></tr>
+          <tr><td>P4</td><td>3580-3590</td><td>PL-D06037-P4</td><td><span class="tag color-verizon">Verizon</span></td><td>$52,071,881</td></tr>
+          <tr><td>P5</td><td>3590-3600</td><td>PL-D06037-P5</td><td><span class="tag color-verizon">Verizon</span></td><td>$52,071,881</td></tr>
+          <tr><td>P6</td><td>3600-3610</td><td>PL-D06037-P6</td><td><span class="tag color-verizon">Verizon</span></td><td>$52,071,881</td></tr>
+          <tr><td>P7</td><td>3610-3620</td><td>PL-D06037-P7</td><td><span class="tag color-dish">DISH (Wetterhorn)</span></td><td>$52,071,881</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CLARK -->
+    <div class="county-card">
+      <h2>Clark County, NV (Las Vegas)</h2>
+      <div class="meta">FIPS 32-003 | Pop. ~2.3M | 7 PALs @ $9,148,000 each | Total: $64,036,000</div>
+      <div class="spectrum-bar">
+        <div class="segment color-cox" style="flex:2">Cox (20 MHz)</div>
+        <div class="segment color-verizon" style="flex:3">Verizon (30 MHz)</div>
+        <div class="segment color-dish" style="flex:2">DISH (20 MHz)</div>
+      </div>
+      <table class="license-table">
+        <thead><tr><th>Channel</th><th>Freq (MHz)</th><th>License ID</th><th>Holder</th><th>Gross Price</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>3550-3560</td><td>PL-D32003-P1</td><td><span class="tag color-cox">Cox Communications</span></td><td>$9,148,000</td></tr>
+          <tr><td>P2</td><td>3560-3570</td><td>PL-D32003-P2</td><td><span class="tag color-cox">Cox Communications</span></td><td>$9,148,000</td></tr>
+          <tr><td>P3</td><td>3570-3580</td><td>PL-D32003-P3</td><td><span class="tag color-verizon">Verizon</span></td><td>$9,148,000</td></tr>
+          <tr><td>P4</td><td>3580-3590</td><td>PL-D32003-P4</td><td><span class="tag color-verizon">Verizon</span></td><td>$9,148,000</td></tr>
+          <tr><td>P5</td><td>3590-3600</td><td>PL-D32003-P5</td><td><span class="tag color-verizon">Verizon</span></td><td>$9,148,000</td></tr>
+          <tr><td>P6</td><td>3600-3610</td><td>PL-D32003-P6</td><td><span class="tag color-dish">DISH (Wetterhorn)</span></td><td>$9,148,000</td></tr>
+          <tr><td>P7</td><td>3610-3620</td><td>PL-D32003-P7</td><td><span class="tag color-dish">DISH (Wetterhorn)</span></td><td>$9,148,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-card">
+      <h3>Cross-County Summary</h3>
+      <div class="stat-row"><span class="stat-label">Total PALs (3 counties)</span><span class="stat-value">21 licenses</span></div>
+      <div class="stat-row"><span class="stat-label">Total Auction Spend</span><span class="stat-value">$553,349,167</span></div>
+      <div class="stat-row"><span class="stat-label">Verizon</span><span class="stat-value">9 PALs (43%) | 30 MHz in each county</span></div>
+      <div class="stat-row"><span class="stat-label">DISH/EchoStar</span><span class="stat-value">5 PALs (24%) | present in all 3 counties</span></div>
+      <div class="stat-row"><span class="stat-label">Cox Communications</span><span class="stat-value">4 PALs (19%) | Maricopa + Clark only</span></div>
+      <div class="stat-row"><span class="stat-label">Charter (Spectrum)</span><span class="stat-value">2 PALs (10%) | LA County only</span></div>
+      <div class="stat-row"><span class="stat-label">SoCal Edison</span><span class="stat-value">1 PAL (5%) | LA County only</span></div>
+    </div>
+    
+    <div class="summary-card">
+      <h3>$/MHz/POP Comparison</h3>
+      <div class="stat-row"><span class="stat-label">LA County</span><span class="stat-value">$0.52/MHz/POP (highest)</span></div>
+      <div class="stat-row"><span class="stat-label">Maricopa County</span><span class="stat-value">$0.40/MHz/POP</span></div>
+      <div class="stat-row"><span class="stat-label">Clark County</span><span class="stat-value">$0.40/MHz/POP</span></div>
+    </div>
+
+    <div class="note-box">
+      <strong>Key Notes:</strong><br>
+      &bull; Wetterhorn Wireless L.L.C. is a wholly-owned subsidiary of DISH Network / EchoStar Corporation. Post Jan 2024 DISH-EchoStar merger, CBRS PALs were transferred to EchoStar Wireless Holding L.L.C.<br>
+      &bull; Spectrum Wireless Holdings, LLC is Charter Communications' auction bidding entity.<br>
+      &bull; All PALs are county-wide, 10-year term (issued ~2021, expiring ~2031), renewable. 47 CFR Part 96.<br>
+      &bull; EchoStar is actively divesting spectrum as of 2025-2026. DISH CBRS PALs status may change; monitor FCC ULS for transfers.<br>
+      &bull; GAA (General Authorized Access) tier remains available in all 3 counties on any unused PAL channels + 3650-3700 MHz band (50 MHz).<br>
+      &bull; SoCal Edison's PAL acquisition reflects utility private network strategy for grid infrastructure.
+    </div>
+
+  </div>
+</div>
+
+<script>
+// County boundary approximations (simplified polygons)
+const counties = {
+  maricopa: {
+    name: "Maricopa County, AZ",
+    center: [33.45, -112.07],
+    color: "#f59e0b",
+    bounds: [
+      [33.88, -113.33], [33.88, -111.04], [32.95, -111.04], [32.95, -111.68],
+      [33.18, -111.68], [33.18, -112.03], [32.77, -112.03], [32.77, -113.33]
+    ],
+    holders: [
+      {name: "Cox Communications", pals: 2, color: "#f59e0b"},
+      {name: "Verizon", pals: 3, color: "#dc2626"},
+      {name: "DISH/EchoStar", pals: 2, color: "#8b5cf6"}
+    ],
+    totalSpend: "$124.8M",
+    perPal: "$17.83M"
+  },
+  losAngeles: {
+    name: "Los Angeles County, CA",
+    center: [34.05, -118.25],
+    color: "#06b6d4",
+    bounds: [
+      [35.01, -118.95], [35.01, -117.65], [34.82, -117.65], [34.82, -118.13],
+      [34.29, -118.13], [34.29, -117.65], [33.70, -117.65], [33.70, -118.95]
+    ],
+    holders: [
+      {name: "SoCal Edison", pals: 1, color: "#22c55e"},
+      {name: "Charter (Spectrum)", pals: 2, color: "#06b6d4"},
+      {name: "Verizon", pals: 3, color: "#dc2626"},
+      {name: "DISH/EchoStar", pals: 1, color: "#8b5cf6"}
+    ],
+    totalSpend: "$364.5M",
+    perPal: "$52.07M"
+  },
+  clark: {
+    name: "Clark County, NV",
+    center: [36.17, -115.14],
+    color: "#8b5cf6",
+    bounds: [
+      [36.85, -115.90], [36.85, -114.63], [35.00, -114.63], [35.00, -115.90]
+    ],
+    holders: [
+      {name: "Cox Communications", pals: 2, color: "#f59e0b"},
+      {name: "Verizon", pals: 3, color: "#dc2626"},
+      {name: "DISH/EchoStar", pals: 2, color: "#8b5cf6"}
+    ],
+    totalSpend: "$64.0M",
+    perPal: "$9.15M"
+  }
+};
+
+// Initialize map
+const map = L.map('map', {
+  center: [34.5, -115],
+  zoom: 6,
+  zoomControl: true
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap &copy; CARTO',
+  subdomains: 'abcd',
+  maxZoom: 20
+}).addTo(map);
+
+// Add county polygons and markers
+Object.values(counties).forEach(county => {
+  // County boundary polygon
+  const polygon = L.polygon(county.bounds, {
+    color: '#475569',
+    weight: 2,
+    fillColor: '#334155',
+    fillOpacity: 0.3
+  }).addTo(map);
+
+  // Pie-chart style marker showing spectrum allocation
+  const popupContent = `
+    <div style="font-family: sans-serif; min-width: 240px;">
+      <h3 style="margin:0 0 8px; font-size:14px; color:#1e293b;">${county.name}</h3>
+      <div style="font-size:12px; color:#64748b; margin-bottom:8px;">7 PALs | ${county.totalSpend} total | ${county.perPal}/PAL</div>
+      <table style="width:100%; font-size:12px; border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <th style="text-align:left; padding:4px; color:#64748b;">Holder</th>
+          <th style="text-align:center; padding:4px; color:#64748b;">PALs</th>
+          <th style="text-align:center; padding:4px; color:#64748b;">MHz</th>
+        </tr>
+        ${county.holders.map(h => `
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:4px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${h.color};margin-right:4px;"></span>${h.name}</td>
+            <td style="text-align:center; padding:4px;">${h.pals}</td>
+            <td style="text-align:center; padding:4px;">${h.pals * 10}</td>
+          </tr>
+        `).join('')}
+      </table>
+    </div>
+  `;
+
+  // Create custom SVG pie chart icon
+  const total = 7;
+  let cumAngle = -90;
+  let paths = '';
+  county.holders.forEach(h => {
+    const startAngle = cumAngle;
+    const sweep = (h.pals / total) * 360;
+    const endAngle = startAngle + sweep;
+    
+    const x1 = 20 + 18 * Math.cos(startAngle * Math.PI / 180);
+    const y1 = 20 + 18 * Math.sin(startAngle * Math.PI / 180);
+    const x2 = 20 + 18 * Math.cos(endAngle * Math.PI / 180);
+    const y2 = 20 + 18 * Math.sin(endAngle * Math.PI / 180);
+    const largeArc = sweep > 180 ? 1 : 0;
+    
+    paths += `<path d="M20,20 L${x1},${y1} A18,18 0 ${largeArc},1 ${x2},${y2} Z" fill="${h.color}" stroke="#0f172a" stroke-width="1"/>`;
+    cumAngle = endAngle;
+  });
+  
+  const svgIcon = L.divIcon({
+    html: `<svg width="40" height="40" viewBox="0 0 40 40">${paths}<circle cx="20" cy="20" r="6" fill="#0f172a"/><text x="20" y="23" text-anchor="middle" fill="white" font-size="8" font-weight="bold">7</text></svg>`,
+    className: '',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20]
+  });
+
+  L.marker(county.center, {icon: svgIcon})
+    .addTo(map)
+    .bindPopup(popupContent, {maxWidth: 300});
+
+  // County name label
+  L.marker(county.center, {
+    icon: L.divIcon({
+      html: `<div style="font-size:12px;font-weight:700;color:#f8fafc;text-shadow:0 1px 4px rgba(0,0,0,0.9);white-space:nowrap;text-align:center;transform:translateY(-30px);">${county.name}</div>`,
+      className: '',
+      iconSize: [200, 20],
+      iconAnchor: [100, 10]
+    })
+  }).addTo(map);
+
+  // Holder name labels below the pie chart
+  const holderLines = county.holders.map(h =>
+    `<span style="color:${h.color};font-weight:700;">${h.name}</span> <span style="color:#94a3b8;">(${h.pals}x10 MHz)</span>`
+  ).join('<br>');
+
+  L.marker(county.center, {
+    icon: L.divIcon({
+      html: `<div style="font-size:11px;line-height:1.6;text-shadow:0 1px 3px rgba(0,0,0,0.9);white-space:nowrap;text-align:center;transform:translateY(28px);background:rgba(15,23,42,0.85);padding:6px 10px;border-radius:6px;border:1px solid #334155;">${holderLines}</div>`,
+      className: '',
+      iconSize: [250, 80],
+      iconAnchor: [125, 0]
+    })
+  }).addTo(map);
+});
+
+// Fit bounds to show all counties
+map.fitBounds([
+  [32.5, -119.5],
+  [37.0, -111.0]
+], {padding: [20, 20]});
+</script>
+
+</body>
+</html>
