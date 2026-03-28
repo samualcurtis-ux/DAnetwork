@@ -41,7 +41,7 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
 <div id="map"></div>
 <div id="sidebar">
   <h1>PROJECT ARISTOTLE</h1>
-  <h2>Collin County, TX -- Network Acquisition</h2>
+  <h2>Collin County, TX -- Augmented Network Design</h2>
   
   <div class="stat-grid">
     <div class="stat-card"><div class="num">5,053</div><div class="label">Target BSLs</div></div>
@@ -58,6 +58,8 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
   </div>
   <div class="stat-grid">
     <div class="stat-card green"><div class="num">20</div><div class="label">E8/AtLink Towers</div></div>
+    <div class="stat-card" style="background:#0a2948;border:1px solid #00bfff"><div class="num" style="color:#00bfff">8,313</div><div class="label">OPPORTUNITY BSLs</div></div>
+    <div class="stat-card" style="background:#0a2948;border:1px solid #00bfff"><div class="num" style="color:#00bfff">55 mi</div><div class="label">NEW ROUTE MILES</div></div>
     <div class="stat-card"><div class="num">Tarana</div><div class="label">Equipment</div></div>
   </div>
 
@@ -75,6 +77,10 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
   <div class="section-header">E8 Layers</div>
   <div class="layer-toggle"><label><input type="checkbox" id="togE8" checked onchange="toggleLayer('e8Towers')"> E8/AtLink Towers (20)</label></div>
   <div class="layer-toggle"><label><input type="checkbox" id="togRF" checked onchange="toggleLayer('rfCoverage')"> RF Coverage (Tarana G1 5GHz)</label></div>
+  <div class="section-header" style="color:#00bfff">AUGMENTED DESIGN</div>
+  <div class="layer-toggle"><label><input type="checkbox" id="togAugZones" checked onchange="toggleLayer('augDesign')"> Opportunity Zones (5)</label></div>
+  <div class="layer-toggle"><label><input type="checkbox" id="togAugRoutes" checked onchange="toggleLayer('augRoutes')"> Proposed Extensions</label></div>
+  <div class="layer-toggle"><label><input type="checkbox" id="togAugDist" checked onchange="toggleLayer('augDistPts')"> Proposed Dist Points (312)</label></div>
 
   <h3 style="margin-top:16px;">Target BSLs by City</h3>
   <table>
@@ -108,6 +114,13 @@ td { padding:5px 4px; border-bottom:1px solid rgba(15,52,96,0.5); }
   <div class="legend-item"><div class="legend-dot" style="background:#2ecc71;width:14px;height:14px;border-radius:50%;opacity:0.5;"></div>RF: High Capacity (&gt;100 Mbps)</div>
   <div class="legend-item"><div class="legend-dot" style="background:#f39c12;width:14px;height:14px;border-radius:50%;opacity:0.5;"></div>RF: Standard (50-100 Mbps)</div>
   <div class="legend-item"><div class="legend-dot" style="background:#e74c3c;width:14px;height:14px;border-radius:50%;opacity:0.5;"></div>RF: Edge (25-50 Mbps)</div>
+  <div style="margin-top:8px;font-weight:bold;color:#00bfff;font-size:12px">AUGMENTED DESIGN</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00bfff;width:14px;height:14px;border-radius:50%;opacity:0.7;"></div>Princeton Core (+2,370)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff6b35;width:14px;height:14px;border-radius:50%;opacity:0.7;"></div>Farmersville Core (+2,170)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#9b59b6;width:14px;height:14px;border-radius:50%;opacity:0.7;"></div>Blue Ridge/Anna (+1,120)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2ecc71;width:14px;height:14px;border-radius:50%;opacity:0.7;"></div>McKinney East (+1,117)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f1c40f;width:14px;height:14px;border-radius:50%;opacity:0.7;"></div>Nevada/Lavon (+1,536)</div>
+  <div class="legend-item"><span style="color:#aaa;font-size:11px">--- Dashed lines = proposed routes</span></div>
   </div>
   
   <div class="footer">
@@ -1382,6 +1395,458 @@ e8Towers.forEach(function(t) {
 });
 layers.rfCoverage = rfCoverageGroup;
 rfCoverageGroup.addTo(map);
+
+
+// ============================================================
+// AUGMENTED DESIGN - Market Extension Zones
+// ============================================================
+var augDesignGroup = L.layerGroup();
+var augRoutesGroup = L.layerGroup();
+var augDistPtsGroup = L.layerGroup();
+
+// Princeton Core - Priority 1
+L.circle([33.1796, -96.4984], {
+  radius: 2897,
+  color: '#00bfff',
+  weight: 2,
+  dashArray: '8,6',
+  fillColor: '#00bfff',
+  fillOpacity: 0.06,
+  opacity: 0.7
+}).bindPopup('<b>OPPORTUNITY ZONE: Princeton Core</b><br>Priority: 1<br>Est. Additional BSLs: 2,370<br>New Route Miles: ~15<br>Nearest OLT: OLT-9 (2.1 mi)<br><hr style=&#39;margin:4px 0&#39;>Highest priority. US-380 growth corridor. New subdivisions. Fiber routes already present.').addTo(augDesignGroup);
+L.marker([33.1796, -96.4984], {
+  icon: L.divIcon({
+    className: 'zone-label',
+    html: '<div style="color:#00bfff;font-weight:bold;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;white-space:nowrap;text-align:center">Princeton Core<br>+2,370 BSLs</div>',
+    iconSize: [120, 30],
+    iconAnchor: [60, -15]
+  })
+}).addTo(augDesignGroup);
+L.polyline([[33.19108,-96.49080],[33.16134,-96.49840],[33.17960,-96.49840],[33.19786,-96.49840]], {color:'#00bfff',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.17960,-96.52022],[33.17960,-96.49840],[33.17960,-96.47658]], {color:'#00bfff',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.16917,-96.51398],[33.16917,-96.48282]], {color:'#00bfff',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.19003,-96.51398],[33.19003,-96.48282]], {color:'#00bfff',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.16656,-96.51087],[33.19264,-96.51087]], {color:'#00bfff',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.16656,-96.48593],[33.19264,-96.48593]], {color:'#00bfff',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.circleMarker([33.16148,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16148,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16148,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16148,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.48541],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16511,-96.48108],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16873,-96.48108],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.52004],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.48974],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.48541],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.48108],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17235,-96.47676],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.52004],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.48974],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.48541],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.48108],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17598,-96.47676],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.52004],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.48974],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.48541],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.48108],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17960,-96.47676],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.52004],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.48974],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.48541],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18322,-96.47676],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.52004],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.48974],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.48541],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18685,-96.47676],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19047,-96.48974],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19409,-96.51572],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19409,-96.51139],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19409,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19409,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19409,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19409,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19772,-96.50706],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19772,-96.50273],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19772,-96.49840],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19772,-96.49407],{radius:3,fillColor:'#00bfff',color:'#00bfff',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+
+// Farmersville Core - Priority 2
+L.circle([33.1631, -96.36], {
+  radius: 2414,
+  color: '#ff6b35',
+  weight: 2,
+  dashArray: '8,6',
+  fillColor: '#ff6b35',
+  fillOpacity: 0.06,
+  opacity: 0.7
+}).bindPopup('<b>OPPORTUNITY ZONE: Farmersville Core</b><br>Priority: 2<br>Est. Additional BSLs: 2,170<br>New Route Miles: ~12<br>Nearest OLT: OLT-2 (1.8 mi)<br><hr style=&#39;margin:4px 0&#39;>Town center and adjacent developments. OLTs 2 & 3 have capacity.').addTo(augDesignGroup);
+L.marker([33.1631, -96.36], {
+  icon: L.divIcon({
+    className: 'zone-label',
+    html: '<div style="color:#ff6b35;font-weight:bold;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;white-space:nowrap;text-align:center">Farmersville Core<br>+2,170 BSLs</div>',
+    iconSize: [120, 30],
+    iconAnchor: [60, -15]
+  })
+}).addTo(augDesignGroup);
+L.polyline([[33.16799,-96.35275],[33.14788,-96.36000],[33.16310,-96.36000],[33.17832,-96.36000]], {color:'#ff6b35',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.16310,-96.37818],[33.16310,-96.36000],[33.16310,-96.34182]], {color:'#ff6b35',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.15440,-96.37298],[33.15440,-96.34702]], {color:'#ff6b35',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.17180,-96.37298],[33.17180,-96.34702]], {color:'#ff6b35',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.15223,-96.37039],[33.17397,-96.37039]], {color:'#ff6b35',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.15223,-96.34961],[33.17397,-96.34961]], {color:'#ff6b35',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.circleMarker([33.14861,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.14861,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.14861,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15223,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15223,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15223,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15223,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15223,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15223,-96.34702],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.37731],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.35134],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15585,-96.34702],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.37731],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.35134],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.15948,-96.34269],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.37731],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.35134],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16310,-96.34702],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16672,-96.37731],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16672,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16672,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16672,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16672,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.16672,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.37731],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.35134],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17035,-96.34702],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17397,-96.37298],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17397,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17397,-96.36433],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17397,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17397,-96.34702],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17759,-96.36866],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17759,-96.36000],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17759,-96.35567],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.17759,-96.35134],{radius:3,fillColor:'#ff6b35',color:'#ff6b35',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+
+// Blue Ridge / Anna - Priority 3
+L.circle([33.296, -96.403], {
+  radius: 2414,
+  color: '#9b59b6',
+  weight: 2,
+  dashArray: '8,6',
+  fillColor: '#9b59b6',
+  fillOpacity: 0.06,
+  opacity: 0.7
+}).bindPopup('<b>OPPORTUNITY ZONE: Blue Ridge / Anna</b><br>Priority: 3<br>Est. Additional BSLs: 1,120<br>New Route Miles: ~8<br>Nearest OLT: OLT-5 (0.8 mi)<br><hr style=&#39;margin:4px 0&#39;>Dense BEAD cluster. Extend laterals to adjacent non-BEAD homes. Near-zero incremental plant.').addTo(augDesignGroup);
+L.marker([33.296, -96.403], {
+  icon: L.divIcon({
+    className: 'zone-label',
+    html: '<div style="color:#9b59b6;font-weight:bold;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;white-space:nowrap;text-align:center">Blue Ridge / Anna<br>+1,120 BSLs</div>',
+    iconSize: [120, 30],
+    iconAnchor: [60, -15]
+  })
+}).addTo(augDesignGroup);
+L.polyline([[33.29572,-96.40286],[33.28078,-96.40300],[33.29600,-96.40300],[33.31122,-96.40300]], {color:'#9b59b6',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.29600,-96.42121],[33.29600,-96.40300],[33.29600,-96.38479]], {color:'#9b59b6',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.28730,-96.41600],[33.28730,-96.39000]], {color:'#9b59b6',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.30470,-96.41600],[33.30470,-96.39000]], {color:'#9b59b6',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.28513,-96.41340],[33.30687,-96.41340]], {color:'#9b59b6',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.28513,-96.39260],[33.30687,-96.39260]], {color:'#9b59b6',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.circleMarker([33.28151,-96.41167],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28151,-96.40733],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28151,-96.40300],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28151,-96.39867],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28513,-96.41167],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28513,-96.40733],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28513,-96.40300],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28513,-96.39867],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28513,-96.39000],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28875,-96.41600],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28875,-96.41167],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28875,-96.40733],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28875,-96.40300],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28875,-96.39867],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.28875,-96.39000],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29238,-96.41600],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29238,-96.40733],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29238,-96.40300],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29238,-96.39433],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29238,-96.39000],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29238,-96.38566],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29600,-96.42034],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29600,-96.39000],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29600,-96.38566],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29962,-96.42034],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29962,-96.41600],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29962,-96.39000],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.29962,-96.38566],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30325,-96.42034],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30325,-96.41600],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30325,-96.41167],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30325,-96.39000],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30687,-96.41600],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30687,-96.39867],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.30687,-96.39433],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.31049,-96.40733],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.31049,-96.40300],{radius:3,fillColor:'#9b59b6',color:'#9b59b6',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+
+// McKinney East - Priority 4
+L.circle([33.2034, -96.57], {
+  radius: 2414,
+  color: '#2ecc71',
+  weight: 2,
+  dashArray: '8,6',
+  fillColor: '#2ecc71',
+  fillOpacity: 0.06,
+  opacity: 0.7
+}).bindPopup('<b>OPPORTUNITY ZONE: McKinney East</b><br>Priority: 4<br>Est. Additional BSLs: 1,117<br>New Route Miles: ~10<br>Nearest OLT: OLT-7 (0.3 mi)<br><hr style=&#39;margin:4px 0&#39;>East McKinney ETJ. Heavy existing fiber presence. Selective extensions to subdivisions.').addTo(augDesignGroup);
+L.marker([33.2034, -96.57], {
+  icon: L.divIcon({
+    className: 'zone-label',
+    html: '<div style="color:#2ecc71;font-weight:bold;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;white-space:nowrap;text-align:center">McKinney East<br>+1,117 BSLs</div>',
+    iconSize: [120, 30],
+    iconAnchor: [60, -15]
+  })
+}).addTo(augDesignGroup);
+L.polyline([[33.20447,-96.56983],[33.18818,-96.57000],[33.20340,-96.57000],[33.21862,-96.57000]], {color:'#2ecc71',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.20340,-96.58819],[33.20340,-96.57000],[33.20340,-96.55181]], {color:'#2ecc71',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.19470,-96.58299],[33.19470,-96.55701]], {color:'#2ecc71',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.21210,-96.58299],[33.21210,-96.55701]], {color:'#2ecc71',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.19253,-96.58039],[33.21427,-96.58039]], {color:'#2ecc71',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.19253,-96.55961],[33.21427,-96.55961]], {color:'#2ecc71',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.circleMarker([33.18891,-96.57866],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18891,-96.57433],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18891,-96.57000],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18891,-96.56567],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.18891,-96.56134],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19253,-96.58299],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19253,-96.57866],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19253,-96.57000],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19253,-96.56134],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19253,-96.55701],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19615,-96.58732],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19615,-96.58299],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19615,-96.56567],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19615,-96.56134],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19615,-96.55268],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19978,-96.58732],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19978,-96.58299],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19978,-96.56134],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.19978,-96.55701],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.20340,-96.58732],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.20340,-96.58299],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.20340,-96.56134],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.20340,-96.55701],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.20340,-96.55268],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.20702,-96.56134],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21065,-96.57433],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21427,-96.58299],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21427,-96.57866],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21427,-96.57433],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21427,-96.57000],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21789,-96.57866],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.21789,-96.56567],{radius:3,fillColor:'#2ecc71',color:'#2ecc71',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+
+// Nevada / Lavon Growth - Priority 5
+L.circle([33.03, -96.43], {
+  radius: 2897,
+  color: '#f1c40f',
+  weight: 2,
+  dashArray: '8,6',
+  fillColor: '#f1c40f',
+  fillOpacity: 0.06,
+  opacity: 0.7
+}).bindPopup('<b>OPPORTUNITY ZONE: Nevada / Lavon Growth</b><br>Priority: 5<br>Est. Additional BSLs: 1,536<br>New Route Miles: ~10<br>Nearest OLT: OLT-1 (2.3 mi)<br><hr style=&#39;margin:4px 0&#39;>Growth corridor south of US-380. OLT-1 positioned well. Lavon Lake development.').addTo(augDesignGroup);
+L.marker([33.03, -96.43], {
+  icon: L.divIcon({
+    className: 'zone-label',
+    html: '<div style="color:#f1c40f;font-weight:bold;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;white-space:nowrap;text-align:center">Nevada / Lavon Growth<br>+1,536 BSLs</div>',
+    iconSize: [120, 30],
+    iconAnchor: [60, -15]
+  })
+}).addTo(augDesignGroup);
+L.polyline([[33.02148,-96.42696],[33.01174,-96.43000],[33.03000,-96.43000],[33.04826,-96.43000]], {color:'#f1c40f',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.03000,-96.45178],[33.03000,-96.43000],[33.03000,-96.40822]], {color:'#f1c40f',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.01957,-96.44556],[33.01957,-96.41444]], {color:'#f1c40f',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.04043,-96.44556],[33.04043,-96.41444]], {color:'#f1c40f',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.01696,-96.44245],[33.04304,-96.44245]], {color:'#f1c40f',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.polyline([[33.01696,-96.41755],[33.04304,-96.41755]], {color:'#f1c40f',weight:2,opacity:0.7,dashArray:'5,5'}).addTo(augRoutesGroup);
+L.circleMarker([33.01188,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01188,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01188,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01188,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01551,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.01913,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.45161],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02275,-96.40839],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.45161],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.02638,-96.40839],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.45161],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03000,-96.40839],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.45161],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03362,-96.40839],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.45161],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.03725,-96.40839],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04087,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.44729],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.44296],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.41704],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04449,-96.41271],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04812,-96.43864],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04812,-96.43432],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04812,-96.43000],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04812,-96.42568],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+L.circleMarker([33.04812,-96.42136],{radius:3,fillColor:'#f1c40f',color:'#f1c40f',weight:1,fillOpacity:0.5,opacity:0.6}).addTo(augDistPtsGroup);
+
+layers.augDesign = augDesignGroup;
+layers.augRoutes = augRoutesGroup;
+layers.augDistPts = augDistPtsGroup;
+augDesignGroup.addTo(map);
+augRoutesGroup.addTo(map);
+augDistPtsGroup.addTo(map);
 
 function toggleLayer(name) {
   if(map.hasLayer(layers[name])) {
