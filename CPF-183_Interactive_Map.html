@@ -177,6 +177,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   border-color: #334155 !important;
 }
 
+/* Basemap switcher */
+.basemap-control {
+  position: absolute; top: 52px; left: 12px; z-index: 1000;
+  display: flex; gap: 4px;
+}
+.basemap-btn {
+  background: rgba(15,23,42,0.88); backdrop-filter: blur(8px);
+  border: 1px solid #334155; border-radius: 6px;
+  color: #94a3b8; font-size: 10px; font-weight: 500;
+  padding: 5px 10px; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 4px;
+}
+.basemap-btn:hover { background: rgba(51,65,85,0.7); color: #e2e8f0; }
+.basemap-btn.active {
+  background: rgba(14,165,233,0.2); border-color: #0ea5e9;
+  color: #7dd3fc; font-weight: 600;
+}
+.basemap-btn svg { width: 12px; height: 12px; }
+
 /* Right side panels */
 .side-panel {
   position: absolute; z-index: 1000;
@@ -561,12 +580,53 @@ const map = L.map('map', {
   attributionControl: true,
 }).setView([35.75, -96.7], 7);
 
-// Dark tile layer
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-  subdomains: 'abcd',
-  maxZoom: 19
-}).addTo(map);
+// Basemap tile layers
+const basemaps = {
+  dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd', maxZoom: 19
+  }),
+  light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd', maxZoom: 19
+  }),
+  satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+    maxZoom: 19
+  })
+};
+let activeBasemap = 'dark';
+basemaps.dark.addTo(map);
+
+// Basemap switcher control
+function setBasemap(name) {
+  if (name === activeBasemap) return;
+  map.removeLayer(basemaps[activeBasemap]);
+  basemaps[name].addTo(map);
+  basemaps[name].bringToBack();
+  activeBasemap = name;
+  document.querySelectorAll('.basemap-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.map === name);
+  });
+}
+
+const bmDiv = document.createElement('div');
+bmDiv.className = 'basemap-control';
+bmDiv.innerHTML = `
+  <button class="basemap-btn active" data-map="dark" onclick="setBasemap('dark')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    Dark
+  </button>
+  <button class="basemap-btn" data-map="light" onclick="setBasemap('light')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    Light
+  </button>
+  <button class="basemap-btn" data-map="satellite" onclick="setBasemap('satellite')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+    Satellite
+  </button>
+`;
+document.getElementById('map').parentElement.appendChild(bmDiv);
 
 // ============================================================
 // LAYER GROUPS
