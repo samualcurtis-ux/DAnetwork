@@ -34,6 +34,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .tab-btn.active.current { background: #e74c3c; }
 .tab-btn.active.optimized { background: #27ae60; }
 .tab-btn.active.corrected { background: #e67e22; }
+.tab-btn.active.neilHybrid { background: #f39c12; }
 #header-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .kpi-badge { padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; background: rgba(100, 100, 150, 0.4); color: #ddd; border: 1px solid rgba(150, 150, 200, 0.3); }
 .kpi-badge.green { background: rgba(39, 174, 96, 0.3); color: #2ecc71; border-color: rgba(46, 204, 113, 0.4); }
@@ -87,6 +88,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <button class="tab-btn current active" onclick="switchTab('current')">Current Design</button>
         <button class="tab-btn corrected" onclick="switchTab('corrected')">Corrected Design</button>
         <button class="tab-btn optimized" onclick="switchTab('optimized')">Optimized Design</button>
+        <button class="tab-btn neilHybrid" onclick="switchTab('neilHybrid')">Neil Hybrid</button>
     </div>
     <div id="header-right">
         <div class="kpi-badge green"><span id="kpi-bsls">9,584 BSLs (84.5%)</span></div>
@@ -144,6 +146,8 @@ var map, layers, activeTab = 'current', activeBasemap;
 var layerVisibility = {};
 
 // Single source of truth for all scenario metrics
+var neilHybridSites = [{"id":32,"lat":33.392782,"lon":-111.668473,"bsls":828,"sectors":9,"type":"Infill","detail":"Infill New Build","name":"Infill #32","source":"infill"},{"id":33,"lat":33.612041,"lon":-112.274191,"bsls":765,"sectors":8,"type":"Infill","detail":"Infill New Build","name":"Infill #33","source":"infill"},{"id":25,"lat":33.789166,"lon":-111.962489,"bsls":689,"sectors":7,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Phoenix Sonoran Preserve)","source":"neil"},{"id":34,"lat":33.658748,"lon":-112.126684,"bsls":601,"sectors":7,"type":"Infill","detail":"Infill New Build","name":"Infill #34","source":"infill"},{"id":35,"lat":33.666353,"lon":-112.269784,"bsls":574,"sectors":6,"type":"Infill","detail":"Infill New Build","name":"Infill #35","source":"infill"},{"id":42,"lat":33.519483,"lon":-112.176563,"bsls":484,"sectors":5,"type":"Infill","detail":"Infill New Build","name":"Infill #42","source":"infill"},{"id":36,"lat":33.386227,"lon":-111.955045,"bsls":472,"sectors":5,"type":"Infill","detail":"Infill New Build","name":"Infill #36","source":"infill"},{"id":51,"lat":33.748034,"lon":-111.908278,"bsls":432,"sectors":5,"type":"Infill","detail":"Infill New Build","name":"Infill #51","source":"infill"},{"id":19,"lat":33.735964,"lon":-112.369199,"bsls":426,"sectors":5,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR 1006603","source":"neil"},{"id":40,"lat":33.725542,"lon":-112.098701,"bsls":383,"sectors":4,"type":"Infill","detail":"Infill New Build","name":"Infill #40","source":"infill"},{"id":39,"lat":33.649702,"lon":-112.037462,"bsls":376,"sectors":4,"type":"Infill","detail":"Infill New Build","name":"Infill #39","source":"infill"},{"id":37,"lat":33.789883,"lon":-112.075355,"bsls":297,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #37","source":"infill"},{"id":68,"lat":33.678976,"lon":-112.317076,"bsls":258,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #68","source":"infill"},{"id":38,"lat":33.358998,"lon":-112.171063,"bsls":238,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #38","source":"infill"},{"id":46,"lat":33.591749,"lon":-112.440638,"bsls":238,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #46","source":"infill"},{"id":58,"lat":33.738368,"lon":-111.986483,"bsls":227,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #58","source":"infill"},{"id":62,"lat":33.566468,"lon":-112.220471,"bsls":207,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #62","source":"infill"},{"id":56,"lat":33.293293,"lon":-111.999116,"bsls":204,"sectors":3,"type":"Infill","detail":"Infill New Build","name":"Infill #56","source":"infill"},{"id":61,"lat":33.208956,"lon":-111.637382,"bsls":163,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #61","source":"infill"},{"id":43,"lat":33.289394,"lon":-111.880212,"bsls":162,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #43","source":"infill"},{"id":53,"lat":33.767354,"lon":-112.11147,"bsls":151,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #53","source":"infill"},{"id":44,"lat":33.64047,"lon":-111.918336,"bsls":143,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #44","source":"infill"},{"id":45,"lat":33.448871,"lon":-112.363357,"bsls":140,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #45","source":"infill"},{"id":8,"lat":33.454133,"lon":-111.622947,"bsls":135,"sectors":2,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR (Falcon Field Water Tower)","source":"neil"},{"id":101,"lat":33.482847,"lon":-112.25689,"bsls":132,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #101","source":"infill"},{"id":41,"lat":33.223832,"lon":-111.678156,"bsls":128,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #41","source":"infill"},{"id":29,"lat":33.53021,"lon":-112.25878,"bsls":124,"sectors":2,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Luke AFB Water Tower)","source":"neil"},{"id":70,"lat":33.33537,"lon":-111.899596,"bsls":116,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #70","source":"infill"},{"id":23,"lat":33.540863,"lon":-112.087862,"bsls":115,"sectors":2,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR (BSNF Railway Station)","source":"neil"},{"id":48,"lat":33.496167,"lon":-112.118657,"bsls":113,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #48","source":"infill"},{"id":106,"lat":33.314997,"lon":-112.152029,"bsls":105,"sectors":2,"type":"Infill","detail":"Infill New Build","name":"Infill #106","source":"infill"},{"id":80,"lat":33.494104,"lon":-112.321105,"bsls":93,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #80","source":"infill"},{"id":27,"lat":33.731429,"lon":-112.27727,"bsls":90,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Bunker Peak)","source":"neil"},{"id":4,"lat":33.272557,"lon":-111.632303,"bsls":82,"sectors":1,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR 1210712","source":"neil"},{"id":54,"lat":33.595558,"lon":-112.080917,"bsls":75,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #54","source":"infill"},{"id":55,"lat":33.67351,"lon":-112.384266,"bsls":68,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #55","source":"infill"},{"id":14,"lat":33.451027,"lon":-111.964385,"bsls":67,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (Chase Plaza)","source":"neil"},{"id":50,"lat":33.433458,"lon":-111.881668,"bsls":61,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #50","source":"infill"},{"id":21,"lat":33.436604,"lon":-112.194756,"bsls":60,"sectors":1,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR 1006795","source":"neil"},{"id":82,"lat":33.634098,"lon":-112.336236,"bsls":59,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #82","source":"infill"},{"id":49,"lat":33.54236,"lon":-112.336817,"bsls":56,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #49","source":"infill"},{"id":78,"lat":33.655295,"lon":-111.959579,"bsls":55,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #78","source":"infill"},{"id":94,"lat":33.361131,"lon":-111.698934,"bsls":53,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #94","source":"infill"},{"id":85,"lat":33.40651,"lon":-111.80944,"bsls":52,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #85","source":"infill"},{"id":52,"lat":33.253909,"lon":-111.832974,"bsls":51,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #52","source":"infill"},{"id":59,"lat":33.344229,"lon":-111.603676,"bsls":51,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #59","source":"infill"},{"id":24,"lat":33.512407,"lon":-112.399798,"bsls":49,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Verrado Golf Club)","source":"neil"},{"id":26,"lat":33.7313,"lon":-112.168601,"bsls":47,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Claderwood Butte)","source":"neil"},{"id":3,"lat":33.39252,"lon":-111.748525,"bsls":46,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (Mesa Office Tower)","source":"neil"},{"id":97,"lat":33.415309,"lon":-112.143541,"bsls":45,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #97","source":"infill"},{"id":6,"lat":33.29326,"lon":-111.723993,"bsls":44,"sectors":1,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR 1273876","source":"neil"},{"id":60,"lat":33.206953,"lon":-111.726623,"bsls":42,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #60","source":"infill"},{"id":105,"lat":33.558277,"lon":-112.377234,"bsls":39,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #105","source":"infill"},{"id":13,"lat":33.370471,"lon":-111.865184,"bsls":36,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (Rustlers Rooste)","source":"neil"},{"id":57,"lat":33.434627,"lon":-111.837106,"bsls":34,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #57","source":"infill"},{"id":12,"lat":33.594169,"lon":-111.978209,"bsls":33,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (Share Butte)","source":"neil"},{"id":47,"lat":33.337762,"lon":-111.647667,"bsls":33,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #47","source":"infill"},{"id":63,"lat":33.698156,"lon":-112.217591,"bsls":30,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #63","source":"infill"},{"id":74,"lat":33.390941,"lon":-112.23115,"bsls":28,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #74","source":"infill"},{"id":87,"lat":33.294916,"lon":-111.799216,"bsls":27,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #87","source":"infill"},{"id":69,"lat":33.584596,"lon":-112.31338,"bsls":26,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #69","source":"infill"},{"id":67,"lat":33.380755,"lon":-112.12891,"bsls":23,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #67","source":"infill"},{"id":28,"lat":33.603509,"lon":-112.389739,"bsls":22,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (White Tank Mountain Camp Ground)","source":"neil"},{"id":88,"lat":33.247112,"lon":-111.885869,"bsls":21,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #88","source":"infill"},{"id":64,"lat":33.527829,"lon":-111.930221,"bsls":20,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #64","source":"infill"},{"id":77,"lat":33.541833,"lon":-112.018169,"bsls":20,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #77","source":"infill"},{"id":11,"lat":33.763477,"lon":-111.79918,"bsls":19,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Wisper Rock Golf Club)","source":"neil"},{"id":16,"lat":33.450233,"lon":-112.099676,"bsls":19,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (New Cox Fowler)","source":"neil"},{"id":66,"lat":33.460457,"lon":-112.461058,"bsls":19,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #66","source":"infill"},{"id":104,"lat":33.651751,"lon":-112.224135,"bsls":19,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #104","source":"infill"},{"id":71,"lat":33.465158,"lon":-112.029257,"bsls":18,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #71","source":"infill"},{"id":22,"lat":33.332164,"lon":-111.95485,"bsls":17,"sectors":1,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR (South Mountain)","source":"neil"},{"id":65,"lat":33.448508,"lon":-112.2728,"bsls":17,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #65","source":"infill"},{"id":83,"lat":33.409586,"lon":-112.063729,"bsls":16,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #83","source":"infill"},{"id":20,"lat":33.601151,"lon":-112.184065,"bsls":13,"sectors":1,"type":"ASR","detail":"ASR Tower Coloc","name":"WL PHX - ASR 1250965","source":"neil"},{"id":17,"lat":33.694774,"lon":-112.009097,"bsls":11,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (Adobe Mountain)","source":"neil"},{"id":79,"lat":33.707123,"lon":-112.443512,"bsls":11,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #79","source":"infill"},{"id":72,"lat":33.795513,"lon":-111.881415,"bsls":9,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #72","source":"infill"},{"id":73,"lat":33.329051,"lon":-111.838107,"bsls":9,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #73","source":"infill"},{"id":96,"lat":33.423651,"lon":-111.704129,"bsls":9,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #96","source":"infill"},{"id":75,"lat":33.695429,"lon":-111.824768,"bsls":8,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #75","source":"infill"},{"id":76,"lat":33.474127,"lon":-111.752715,"bsls":7,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #76","source":"infill"},{"id":98,"lat":33.500677,"lon":-112.055834,"bsls":7,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #98","source":"infill"},{"id":90,"lat":33.305612,"lon":-111.671654,"bsls":6,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #90","source":"infill"},{"id":107,"lat":33.425549,"lon":-112.328751,"bsls":6,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #107","source":"infill"},{"id":1,"lat":33.6101,"lon":-111.811073,"bsls":5,"sectors":1,"type":"ELNK","detail":"EarthLink Coloc","name":"WL PHX - ELNK (Scottsdale Airport)","source":"neil"},{"id":81,"lat":33.591814,"lon":-112.503141,"bsls":5,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #81","source":"infill"},{"id":84,"lat":33.431644,"lon":-112.412426,"bsls":5,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #84","source":"infill"},{"id":86,"lat":33.332674,"lon":-111.754483,"bsls":5,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #86","source":"infill"},{"id":91,"lat":33.361147,"lon":-111.795006,"bsls":5,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #91","source":"infill"},{"id":89,"lat":33.509329,"lon":-111.690514,"bsls":3,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #89","source":"infill"},{"id":100,"lat":33.649457,"lon":-112.174979,"bsls":3,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #100","source":"infill"},{"id":30,"lat":33.344482,"lon":-112.049686,"bsls":2,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Carver Mountain)","source":"neil"},{"id":92,"lat":33.293029,"lon":-112.085687,"bsls":2,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #92","source":"infill"},{"id":102,"lat":33.706928,"lon":-112.506756,"bsls":2,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #102","source":"infill"},{"id":31,"lat":33.70274,"lon":-111.937003,"bsls":1,"sectors":1,"type":"New","detail":"Neil New Build (elevation)","name":"WL PHX - New (Stone Butte West)","source":"neil"},{"id":93,"lat":33.695291,"lon":-111.732307,"bsls":1,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #93","source":"infill"},{"id":95,"lat":33.604312,"lon":-111.922891,"bsls":1,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #95","source":"infill"},{"id":99,"lat":33.514147,"lon":-112.515595,"bsls":1,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #99","source":"infill"},{"id":103,"lat":33.373249,"lon":-112.591774,"bsls":1,"sectors":1,"type":"Infill","detail":"Infill New Build","name":"Infill #103","source":"infill"}];
+var neilAnchorIds = [25,19,8,29,23,27,4,14,21,24,26,3,6,13,12,28,11,16,22,20,17,1,30,31];
 var scenarioMetrics = {
     current: {
         label: 'Current Design',
@@ -232,6 +236,44 @@ var scenarioMetrics = {
         y1LeaseOpt: '$894K',
         y1LeaseCorr: '$606K',
         colocSites: 24, newBuildSites: 77,
+        origCapex: '$2.38M',
+        corrCapex: '$9.38M',
+    },
+    neilHybrid: {
+        label: 'Neil Hybrid',
+        siteLabel: 'Sites: 15 coloc, 85 new (24 Neil anchor + 76 infill)',
+        siteCount: 100,
+        bslsServed: 11346,
+        bslsCovPct: '100%',
+        sectors: 181,
+        ketsenCount: 19,
+        taranaSites: 81,
+        ketsenSites: 19,
+        taranaBSLs: 0,
+        ketsenBSLs: 0,
+        p2pBHSectors: 100,
+        g2AccessSectors: 181,
+        colocCount: 15,
+        newBuildCount: 85,
+        neilAnchorCount: 24,
+        infillCount: 76,
+        infraCapex: '$10.9M',
+        infraCapexFull: '$10,914,200',
+        capexBreakdown: [
+            {label:'G2 BN (181 sec)', val:'$3.80M'},
+            {label:'P2P BH (100 links)', val:'$1.16M'},
+            {label:'Coloc Setup (15)', val:'$0.38M'},
+            {label:'Tower Build (85)', val:'$4.25M'},
+            {label:'Make-Ready + Acc + GW', val:'$0.33M'},
+            {label:'Contingency (10%)', val:'$0.99M'},
+        ],
+        totalInfraCapex: '$10.91M',
+        bead: {total:'$16.06M'},
+        y5CumFCF: 'TBD',
+        y1LeaseHybrid: '$780K',
+        y1LeaseCorrected: '$606K',
+        capexVsCorrected: '+$1.54M',
+        colocSites: 15, newBuildSites: 85,
         origCapex: '$2.38M',
         corrCapex: '$9.38M',
     }
@@ -373,6 +415,34 @@ try {
         });
     }
 
+
+    function renderNeilHybrid() {
+        layers.design.clearLayers();
+        neilHybridSites.forEach(function(s) {
+            var isAnchor = neilAnchorIds.indexOf(s.id) >= 0;
+            var isColoc = s.type === 'ELNK' || s.type === 'ASR';
+            var col, shape;
+            if (isColoc) {
+                col = '#9b59b6'; // purple for coloc
+            } else if (isAnchor) {
+                col = '#f39c12'; // gold for Neil anchor new builds
+            } else {
+                col = '#2ecc71'; // green for infill
+            }
+            var typeLabel = isAnchor ? s.type + ' (Neil)' : s.type;
+            if (isColoc) {
+                // Diamond shape for colocs
+                var icon = L.divIcon({ className: '', html: '<div style="width:12px;height:12px;background:'+col+';border:2px solid #fff;transform:rotate(45deg);box-shadow:0 0 6px rgba(155,89,182,0.8);"></div>', iconSize: [12,12], iconAnchor: [6,6] });
+                L.marker([s.lat, s.lon], { icon: icon })
+                    .bindPopup('<b>' + s.name + '</b><br>Type: ' + typeLabel + '<br>BSLs: ' + s.bsls + '<br>Sectors: ' + s.sectors + '<br>' + s.detail)
+                    .addTo(layers.design);
+            } else {
+                L.circleMarker([s.lat, s.lon], { radius: isAnchor ? 6 : 4, color: col, weight: 2, opacity: 1, fillOpacity: 0.8, fillColor: col })
+                    .bindPopup('<b>' + s.name + '</b><br>Type: ' + typeLabel + '<br>BSLs: ' + s.bsls + '<br>Sectors: ' + s.sectors + '<br>' + s.detail)
+                    .addTo(layers.design);
+            }
+        });
+    }
     function toggleMapLayer(ln) {
         var v = !layerVisibility[ln]; layerVisibility[ln] = v;
         var m = { 'sales-areas': layers.sa, 'bsl-tarana': layers.bslT, 'bsl-ketsen': layers.bslK, 'fiber-sites': layers.fiber, 'design-sites': layers.design, 'coverage': layers.coverage, 'da-towers': layers.daTowers, 'el-towers': layers.elTowers };
@@ -385,7 +455,7 @@ try {
         // Filter to PHX-only sales areas
         var phxAreas = salesAreas.filter(function(s){return s.info&&s.info['Sales Area Name']&&s.info['Sales Area Name'].indexOf('PHX1')===0;});
         var phxActive = phxAreas.filter(function(s){return s.info&&s.info['Sales Areas Status']==='Active';}).length;
-        var isCov = activeTab !== 'current';
+        var isCov = activeTab !== 'current' && activeTab !== 'neilHybrid';
 
         var items = [
             {k:'bsl-tarana',n:'BSLs - Tarana Served',c:'#3498db',shape:'dot',ct:bslTarana.length},
@@ -461,7 +531,7 @@ try {
             '<div class="econ-section"><div class="econ-label">BEAD Award</div>'+
             '<div class="econ-row"><span>Total</span><span class="econ-val positive">'+m.bead.total+'</span></div>'+
             '<div class="econ-row"><span>5-Yr Cum FCF</span><span class="econ-val positive">'+m.y5CumFCF+'</span></div></div>';
-        } else {
+        } else if (activeTab==='optimized') {
             h='<div class="econ-section"><div class="econ-label">Optimization</div>'+
             '<div class="econ-row"><span>Colocation Sites</span><span class="econ-val">'+m.colocCount+'</span></div>'+
             '<div class="econ-row"><span>New Build Sites</span><span class="econ-val">'+m.newBuildCount+'</span></div>'+
@@ -483,6 +553,28 @@ try {
             '<div class="econ-section"><div class="econ-label">BEAD Award</div>'+
             '<div class="econ-row"><span>Total</span><span class="econ-val positive">'+m.bead.total+'</span></div>'+
             '<div class="econ-row"><span>5-Yr Cum FCF</span><span class="econ-val positive">'+m.y5CumFCF+'</span></div></div>';
+        } else if (activeTab==='neilHybrid') {
+            h='<div class="econ-section"><div class="econ-label">Neil Hybrid Design</div>'+
+            '<div class="econ-row"><span>Neil Anchor Sites</span><span class="econ-val">'+m.neilAnchorCount+' ('+m.colocCount+' coloc, '+(m.neilAnchorCount-m.colocCount)+' new)</span></div>'+
+            '<div class="econ-row"><span>Infill Sites Added</span><span class="econ-val">'+m.infillCount+'</span></div>'+
+            '<div class="econ-row"><span>Total Active Sites</span><span class="econ-val">'+m.siteCount+'</span></div>'+
+            '<div class="econ-row"><span>Sectors Required</span><span class="econ-val negative">'+m.sectors+' (vs 115 Corrected)</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">CAPEX (Architecture-Driven)</div>';
+            m.capexBreakdown.forEach(function(item){
+                h+='<div class="econ-row"><span>'+item.label+'</span><span class="econ-val">'+item.val+'</span></div>';
+            });
+            h+='<div class="econ-row" style="border-top:1px solid rgba(150,150,200,0.3);padding-top:4px;margin-top:4px;"><span>Total Infra CAPEX</span><span class="econ-val negative">'+m.totalInfraCapex+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">CAPEX Comparison</div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Current</div><div class="econ-bar"><div class="econ-bar-fill" style="width:22%;background:#3498db;"></div></div><div style="font-size:10px;color:#aaa;width:50px;text-align:right;">$2.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Corrected</div><div class="econ-bar"><div class="econ-bar-fill" style="width:86%;background:#e67e22;"></div></div><div style="font-size:10px;color:#aaa;width:50px;text-align:right;">$9.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Optimized</div><div class="econ-bar"><div class="econ-bar-fill" style="width:80%;background:#27ae60;"></div></div><div style="font-size:10px;color:#aaa;width:50px;text-align:right;">$8.72M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#f39c12;">Neil Hybrid</div><div class="econ-bar"><div class="econ-bar-fill" style="width:100%;background:#f39c12;"></div></div><div style="font-size:10px;color:#f39c12;width:50px;text-align:right;">'+m.totalInfraCapex+'</div></div>'+
+            '<div class="econ-row" style="margin-top:6px;"><span>vs Corrected</span><span class="econ-val negative">'+m.capexVsCorrected+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">Annual Lease OPEX</div>'+
+            '<div class="econ-row"><span>Neil Hybrid</span><span class="econ-val negative">'+m.y1LeaseHybrid+'</span></div>'+
+            '<div class="econ-row"><span>Corrected (all owned)</span><span class="econ-val">'+m.y1LeaseCorrected+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">BEAD Award</div>'+
+            '<div class="econ-row"><span>Total</span><span class="econ-val positive">'+m.bead.total+'</span></div></div>';
         }
         p.innerHTML = h;
     }
@@ -501,10 +593,16 @@ try {
                 return{label:'#'+s.id,bsls:s.bsls,sectors:s.sectors,type:isKetsen(s.id)?'Ketsen':'Tarana G2'};
             });
             t.textContent = m.siteLabel + ' (' + sites.length + ')';
-        } else {
+        } else if (activeTab==='optimized') {
             sites = colocSites.map(function(s){return{label:'#'+s.id,bsls:s.bsls,sectors:s.sectors,type:(isKetsen(s.id)?'Ketsen/':'')+'Coloc'};})
                 .concat(newBuildSites.map(function(s){return{label:'#'+s.id,bsls:s.bsls,sectors:s.sectors,type:(isKetsen(s.id)?'Ketsen/':'')+'New'};}))
                 .sort(function(a,b){return b.bsls-a.bsls;});
+            t.textContent = m.siteLabel + ' (' + sites.length + ')';
+        } else if (activeTab==='neilHybrid') {
+            sites = neilHybridSites.slice().sort(function(a,b){return b.bsls-a.bsls;}).map(function(s){
+                var isAnchor = neilAnchorIds.indexOf(s.id) >= 0;
+                return{label:s.name.length>25?s.name.substring(0,25)+'...':s.name,bsls:s.bsls,sectors:s.sectors,type:s.type+(isAnchor?' (Neil)':' (Infill)')};
+            });
             t.textContent = m.siteLabel + ' (' + sites.length + ')';
         }
         var hdr = showType ? '<th>SITE</th><th>BSLS</th><th>SEC</th><th>TYPE</th>' : '<th>SITE</th><th>BSLS</th><th>SEC</th><th>LAT</th><th>LON</th>';
@@ -534,7 +632,7 @@ try {
         document.querySelector('.tab-btn.'+tab).classList.add('active');
         if (tab==='current'){renderCurrent();}
         else if (tab==='corrected'){renderCorrected();}
-        else{renderOptimized();}
+        else if (tab==='optimized'){renderOptimized();}else{renderNeilHybrid();}
         renderCoverage();
         if (layerVisibility['design-sites']) layers.design.addTo(map);
         if (layerVisibility['coverage']) layers.coverage.addTo(map);
