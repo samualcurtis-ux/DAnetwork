@@ -143,6 +143,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 .design-tab:first-child { border-radius: 6px 0 0 6px; }
 .design-tab:last-child { border-radius: 0 6px 6px 0; }
+.design-tab:not(:first-child):not(:last-child) { border-radius: 0; }
 .design-tab.active {
   background: rgba(14,165,233,0.2); border-color: #0ea5e9;
   color: #7dd3fc; font-weight: 600;
@@ -268,6 +269,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     <div class="design-tabs">
       <button class="design-tab active" id="tabPrimary" onclick="switchDesign('primary')">Primary Design (with ATC)</button>
       <button class="design-tab" id="tabAlt" onclick="switchDesign('alt')">Alt Design (no ATC)</button>
+      <button class="design-tab" id="tabBom" onclick="switchDesign('bom')" style="border-left:none;">Josh BoM Plan</button>
     </div>
     <div class="stats" id="statsBar">
       <div class="stat-badge">16 Sites</div>
@@ -1288,32 +1290,33 @@ function switchDesign(design) {
   // Update tab styling
   document.getElementById('tabPrimary').classList.toggle('active', design === 'primary');
   document.getElementById('tabAlt').classList.toggle('active', design === 'alt');
+  document.getElementById('tabBom').classList.toggle('active', design === 'bom');
 
   // Show/hide comparison panel
   document.getElementById('comparisonPanel').style.display = design === 'alt' ? 'block' : 'none';
 
+  // Hide all design layers first
+  map.removeLayer(layers.owned);
+  map.removeLayer(layers.atcLease);
+  map.removeLayer(layers.newLease);
+  map.removeLayer(layers.coverage);
+  map.removeLayer(layers.backhaul);
+  Object.values(altLayers).forEach(lg => map.removeLayer(lg));
+  Object.values(bomLayers).forEach(lg => map.removeLayer(lg));
+
   if (design === 'primary') {
-    // Show primary layers
     if (layerState['owned']) layers.owned.addTo(map);
     if (layerState['atcLease']) layers.atcLease.addTo(map);
     if (layerState['newLease']) layers.newLease.addTo(map);
     if (layerState['coverage']) layers.coverage.addTo(map);
     if (layerState['backhaul']) layers.backhaul.addTo(map);
-    // Hide alt layers
-    Object.values(altLayers).forEach(lg => map.removeLayer(lg));
-    // Update legend text
     updateLegendForPrimary();
-  } else {
-    // Hide primary site/coverage/backhaul layers
-    map.removeLayer(layers.owned);
-    map.removeLayer(layers.atcLease);
-    map.removeLayer(layers.newLease);
-    map.removeLayer(layers.coverage);
-    map.removeLayer(layers.backhaul);
-    // Show alt layers
+  } else if (design === 'alt') {
     Object.values(altLayers).forEach(lg => lg.addTo(map));
-    // Update legend text
     updateLegendForAlt();
+  } else if (design === 'bom') {
+    Object.values(bomLayers).forEach(lg => lg.addTo(map));
+    updateLegendForBom();
   }
 }
 
@@ -1332,6 +1335,214 @@ function updateLegendForAlt() {
   if (items[2]) items[2].querySelector('span').textContent = 'New Lease Required (5)';
 }
 
+function updateLegendForBom() {
+  const items = document.querySelectorAll('.legend-item');
+  if (items[0]) items[0].querySelector('span').textContent = 'New Build (AtLink) (1)';
+  if (items[1]) { items[1].querySelector('span').textContent = 'ATC Upgrade (1)'; items[1].querySelector('.legend-dot').style.background = '#f87171'; }
+  if (items[2]) items[2].querySelector('span').textContent = 'New/SBA Lease (6)';
+}
+
+
+
+// ============================================================
+// JOSH BoM DESIGN (8 CPF 3.0 sites)
+// ============================================================
+
+const bomSites = [
+  {
+    "name": "Cushing",
+    "type": "New Lease",
+    "owner": "SBA",
+    "asr": "1055834",
+    "height": 280,
+    "lat": 36.005833,
+    "lon": -96.725833,
+    "g2_must": 3,
+    "g2_nice": 0,
+    "g2_total": 3,
+    "cabinets": 1,
+    "backhauls": 2,
+    "fiber": "No"
+  },
+  {
+    "name": "Highway 18",
+    "type": "New Lease",
+    "owner": "TowerCo 2013 LLC",
+    "asr": "1292415",
+    "height": 280,
+    "lat": 35.591389,
+    "lon": -96.882778,
+    "g2_must": 2,
+    "g2_nice": 0,
+    "g2_total": 2,
+    "cabinets": 1,
+    "backhauls": 2,
+    "fiber": "No"
+  },
+  {
+    "name": "Arlington",
+    "type": "New Lease",
+    "owner": "TowerCo 2013 LLC",
+    "asr": "1290925",
+    "height": 280,
+    "lat": 35.628139,
+    "lon": -96.661194,
+    "g2_must": 3,
+    "g2_nice": 0,
+    "g2_total": 3,
+    "cabinets": 1,
+    "backhauls": 2,
+    "fiber": "No"
+  },
+  {
+    "name": "New Build Sparks",
+    "type": "New Build",
+    "owner": "Atlink Services",
+    "asr": "N/A",
+    "height": 340,
+    "lat": 35.608644,
+    "lon": -96.773609,
+    "g2_must": 4,
+    "g2_nice": 0,
+    "g2_total": 4,
+    "cabinets": 1,
+    "backhauls": 2,
+    "fiber": "No"
+  },
+  {
+    "name": "King Street",
+    "type": "SBA Upgrade",
+    "owner": "SBA",
+    "asr": "1201452",
+    "height": 300,
+    "lat": 36.131917,
+    "lon": -95.853583,
+    "g2_must": 1,
+    "g2_nice": 3,
+    "g2_total": 4,
+    "cabinets": 1,
+    "backhauls": 2,
+    "fiber": "Yes"
+  },
+  {
+    "name": "Sheridan",
+    "type": "New Lease",
+    "owner": "Array Digital",
+    "asr": "1011058",
+    "height": 230,
+    "lat": 36.040833,
+    "lon": -95.90625,
+    "g2_must": 1,
+    "g2_nice": 3,
+    "g2_total": 4,
+    "cabinets": 1,
+    "backhauls": 2,
+    "fiber": "Yes"
+  },
+  {
+    "name": "Marland",
+    "type": "New Lease",
+    "owner": "SBA",
+    "asr": "1055839",
+    "height": 300,
+    "lat": 36.600167,
+    "lon": -97.137944,
+    "g2_must": 4,
+    "g2_nice": 0,
+    "g2_total": 4,
+    "cabinets": 1,
+    "backhauls": 1,
+    "fiber": "Yes"
+  },
+  {
+    "name": "East Shawnee",
+    "type": "ATC Upgrade",
+    "owner": "ATC",
+    "asr": "1064739",
+    "height": 300,
+    "lat": 35.336111,
+    "lon": -96.854444,
+    "g2_must": 1,
+    "g2_nice": 0,
+    "g2_total": 1,
+    "cabinets": 1,
+    "backhauls": 0,
+    "fiber": "No"
+  }
+];
+
+const bomLayers = {
+  sites: L.layerGroup(),
+  coverage: L.layerGroup()
+};
+
+const bomColors = {
+  'New Lease': '#a78bfa',
+  'New Build': '#34d399',
+  'SBA Upgrade': '#fbbf24',
+  'ATC Upgrade': '#f87171'
+};
+
+bomSites.forEach(s => {
+  const color = bomColors[s.type] || '#7dd3fc';
+  const totalBN = s.g2_must + s.g2_nice;
+  
+  const marker = L.circleMarker([s.lat, s.lon], {
+    radius: 10,
+    fillColor: color,
+    color: '#fff',
+    weight: 2.5,
+    opacity: 1,
+    fillOpacity: 0.9
+  });
+  
+  marker.bindPopup(`
+    <div class="popup-title" style="color:${color}">${s.name}</div>
+    <div class="popup-tag" style="background:rgba(167,139,250,0.2);color:#c4b5fd;">BoM PLAN</div>
+    <div class="popup-row"><span class="popup-label">Type</span><span class="popup-value">${s.type}</span></div>
+    <div class="popup-row"><span class="popup-label">Owner</span><span class="popup-value">${s.owner}</span></div>
+    <div class="popup-row"><span class="popup-label">ASR</span><span class="popup-value">${s.asr}</span></div>
+    <div class="popup-row"><span class="popup-label">Height</span><span class="popup-value">${s.height} ft</span></div>
+    <div class="popup-row"><span class="popup-label">Fiber</span><span class="popup-value">${s.fiber}</span></div>
+    <div class="popup-divider"></div>
+    <div class="popup-row"><span class="popup-label">G2 Must-Have BNs</span><span class="popup-value">${s.g2_must}</span></div>
+    <div class="popup-row"><span class="popup-label">G2 Nice-to-Have BNs</span><span class="popup-value">${s.g2_nice}</span></div>
+    <div class="popup-row"><span class="popup-label">Total G2 Sectors</span><span class="popup-value" style="color:#a78bfa;font-weight:700">${totalBN}</span></div>
+    <div class="popup-row"><span class="popup-label">Cabinets</span><span class="popup-value">${s.cabinets}</span></div>
+    <div class="popup-row"><span class="popup-label">Backhaul Links</span><span class="popup-value">${s.backhauls}</span></div>
+    <div class="popup-divider"></div>
+    <div class="popup-row"><span class="popup-label">Est. Cost</span><span class="popup-value" style="color:#fbbf24">$${(totalBN > 0 ? (110327 * totalBN / 4).toLocaleString('en-US', {maximumFractionDigits:0}) : '0')}</span></div>
+  `, {maxWidth: 280});
+  
+  bomLayers.sites.addLayer(marker);
+  
+  // 5km coverage circle
+  const cov = L.circle([s.lat, s.lon], {
+    radius: 5000,
+    color: color,
+    fillColor: color,
+    fillOpacity: 0.06,
+    weight: 1.5,
+    opacity: 0.4,
+    dashArray: '6,4'
+  });
+  bomLayers.coverage.addLayer(cov);
+});
+
+
+// BoM Economics
+const bomEcon = {
+  perTowerG2: 110327.35,
+  perBackhaul: 11589.58,
+  newBuild340: 350000,
+  coLoCost: 4000,
+  totalSites: 8,
+  totalG2Must: 19,
+  totalG2Nice: 6,
+  totalBackhauls: 13,
+  get capexMust() { return (this.totalG2Must / 4) * this.perTowerG2 + this.totalBackhauls * this.perBackhaul + this.newBuild340 + (this.totalSites - 1) * this.coLoCost; },
+  get capexFull() { return ((this.totalG2Must + this.totalG2Nice) / 4) * this.perTowerG2 + this.totalBackhauls * this.perBackhaul + this.newBuild340 + (this.totalSites - 1) * this.coLoCost; }
+};
 
 // ============================================================
 // CONSTRUCTION TIMELINE DATA
