@@ -36,6 +36,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .tab-btn.active.corrected { background: #e67e22; }
 .tab-btn.active.neilHybrid { background: #f39c12; }
     .tab-btn.active.neilOptimistic { background: #1abc9c; }
+    .tab-btn.active.hybridArch { background: #e91e63; }
 #header-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .kpi-badge { padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; background: rgba(100, 100, 150, 0.4); color: #ddd; border: 1px solid rgba(150, 150, 200, 0.3); }
 .kpi-badge.green { background: rgba(39, 174, 96, 0.3); color: #2ecc71; border-color: rgba(46, 204, 113, 0.4); }
@@ -91,6 +92,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <button class="tab-btn optimized" onclick="switchTab('optimized')">Optimized Design</button>
         <button class="tab-btn neilHybrid" onclick="switchTab('neilHybrid')">Neil Hybrid</button>
         <button class="tab-btn neilOptimistic" onclick="switchTab('neilOptimistic')">Neil Optimistic</button>
+        <button class="tab-btn hybridArch" onclick="switchTab('hybridArch')">Hybrid Architecture</button>
     </div>
     <div id="header-right">
         <div class="kpi-badge green"><span id="kpi-bsls">9,584 BSLs (84.5%)</span></div>
@@ -316,6 +318,47 @@ var scenarioMetrics = {
         capexVsCorrected: '-$5.00M',
         colocSites: 19, newBuildSites: 16,
         rangeAssumption: '10km (G2 RNm CBRS+6GHz from elevation)',
+    },
+    hybridArch: {
+        label: 'Hybrid Architecture',
+        siteLabel: 'G2 Overlay (31 anchors) + Ketsen Underlay',
+        siteCount: 31,
+        bslsServed: 11346,
+        bslsCovPct: '100%',
+        sectors: 98,
+        ketsenCount: 31,
+        taranaSites: 31,
+        ketsenSites: 31,
+        taranaBSLs: 11346,
+        ketsenBSLs: 11346,
+        p2pBHSectors: 0,
+        g2AccessSectors: 98,
+        colocCount: 21,
+        newBuildCount: 10,
+        neilAnchorCount: 31,
+        infillCount: 0,
+        infraCapex: '$5.5M',
+        infraCapexFull: '$5,480,450',
+        capexPerBSL: '$483',
+        beadHeadroom: '$10.6M',
+        capexBreakdown: [
+            {label:'G2 BN Overlay (98 sec)', val:'$2.06M'},
+            {label:'Ketsen PTP Mesh (30 links)', val:'$0.72M'},
+            {label:'Ketsen PTMP CPE (1,135)', val:'$1.14M'},
+            {label:'Coloc Setup (21)', val:'$0.53M'},
+            {label:'Tower Build (10)', val:'$0.50M'},
+            {label:'Contingency (10%)', val:'$0.50M'},
+        ],
+        totalInfraCapex: '$5.48M',
+        bead: {total:'$16.06M'},
+        y5CumFCF: 'TBD',
+        y1Lease: '$438K',
+        capexVsCorrected: '-$3.9M',
+        capexVsNeilHybrid: '-$5.4M',
+        colocSites: 21, newBuildSites: 10,
+        archDescription: 'G2 wide-area overlay + Ketsen mmWave PTP mesh + Ketsen PTMP last mile',
+        oversubDL: '20:1',
+        oversubUL: '33:1',
     }
 };
 
@@ -386,7 +429,7 @@ try {
     // === COVERAGE RENDERING ===
     function renderCoverage() {
         layers.coverage.clearLayers();
-        if (activeTab === 'current') return;
+        if (activeTab === 'current' || activeTab === 'hybridArch') return;
 
         // Tarana sector wedges (blue, semi-transparent)
         for (var sid in taranaWedges) {
@@ -506,6 +549,71 @@ try {
             }
         });
     }
+
+    function renderHybridArch() {
+        layers.design.clearLayers();
+        // Only neil anchor sites (no infill needed - Ketsen PTMP handles leaf coverage)
+        var anchors = neilHybridSites.filter(function(s){ return neilAnchorIds.indexOf(s.id) >= 0; });
+
+        // Draw Ketsen PTP mesh links between nearest neighbors
+        var meshLinks = [];
+        anchors.forEach(function(a) {
+            var dists = anchors.filter(function(b){return b.id !== a.id;}).map(function(b){
+                var dlat = (b.lat - a.lat) * 111.32;
+                var dlon = (b.lon - a.lon) * 111.32 * Math.cos(a.lat * Math.PI / 180);
+                return {id: b.id, lat: b.lat, lon: b.lon, dist: Math.sqrt(dlat*dlat + dlon*dlon)};
+            }).sort(function(x,y){return x.dist - y.dist;});
+            // Connect to nearest 2 neighbors within 20km
+            dists.slice(0, 2).forEach(function(n){
+                if (n.dist < 20) {
+                    var key = Math.min(a.id, n.id) + '-' + Math.max(a.id, n.id);
+                    if (meshLinks.indexOf(key) < 0) {
+                        meshLinks.push(key);
+                        L.polyline([[a.lat, a.lon], [n.lat, n.lon]], {
+                            color: '#e91e63', weight: 1.5, opacity: 0.6, dashArray: '8 5'
+                        }).bindPopup('Ketsen PTP Mesh<br>' + n.dist.toFixed(1) + ' km').addTo(layers.design);
+                    }
+                }
+            });
+        });
+
+        // Draw Ketsen PTMP coverage rings (2km radius) around each anchor
+        anchors.forEach(function(s) {
+            L.circle([s.lat, s.lon], {
+                radius: 2000, color: '#e91e63', weight: 1, opacity: 0.3,
+                fillOpacity: 0.08, fillColor: '#e91e63', dashArray: '4 3'
+            }).addTo(layers.design);
+        });
+
+        // Draw G2 overlay coverage rings (5km radius)
+        anchors.forEach(function(s) {
+            L.circle([s.lat, s.lon], {
+                radius: 5000, color: '#3498db', weight: 1, opacity: 0.15,
+                fillOpacity: 0.04, fillColor: '#3498db'
+            }).addTo(layers.design);
+        });
+
+        // Draw anchor site markers
+        anchors.forEach(function(s) {
+            var isColoc = s.type === 'ELNK' || s.type === 'ASR';
+            if (isColoc) {
+                var icon = L.divIcon({ className: '', html: '<div style="width:16px;height:16px;background:#e91e63;border:2px solid #fff;transform:rotate(45deg);box-shadow:0 0 8px rgba(233,30,99,0.8);"></div>', iconSize: [16,16], iconAnchor: [8,8] });
+                L.marker([s.lat, s.lon], { icon: icon })
+                    .bindPopup('<b>' + s.name + '</b><br>Type: ' + s.type + ' (Coloc)<br>BSLs: ' + s.bsls + '<br>Sectors: ' + s.sectors +
+                        '<br><b>Overlay:</b> Tarana G2 (5km)' +
+                        '<br><b>Underlay:</b> Ketsen PTMP (2km)' +
+                        '<br><b>Backhaul:</b> Ketsen PTP Mesh')
+                    .addTo(layers.design);
+            } else {
+                L.circleMarker([s.lat, s.lon], { radius: 8, color: '#e91e63', weight: 2, opacity: 1, fillOpacity: 0.9, fillColor: '#e91e63' })
+                    .bindPopup('<b>' + s.name + '</b><br>Type: ' + s.type + ' (New Build)<br>BSLs: ' + s.bsls + '<br>Sectors: ' + s.sectors +
+                        '<br><b>Overlay:</b> Tarana G2 (5km)' +
+                        '<br><b>Underlay:</b> Ketsen PTMP (2km)' +
+                        '<br><b>Backhaul:</b> Ketsen PTP Mesh')
+                    .addTo(layers.design);
+            }
+        });
+    }
     function toggleMapLayer(ln) {
         var v = !layerVisibility[ln]; layerVisibility[ln] = v;
         var m = { 'sales-areas': layers.sa, 'bsl-tarana': layers.bslT, 'bsl-ketsen': layers.bslK, 'fiber-sites': layers.fiber, 'design-sites': layers.design, 'coverage': layers.coverage, 'da-towers': layers.daTowers, 'el-towers': layers.elTowers };
@@ -518,7 +626,7 @@ try {
         // Filter to PHX-only sales areas
         var phxAreas = salesAreas.filter(function(s){return s.info&&s.info['Sales Area Name']&&s.info['Sales Area Name'].indexOf('PHX1')===0;});
         var phxActive = phxAreas.filter(function(s){return s.info&&s.info['Sales Areas Status']==='Active';}).length;
-        var isCov = activeTab !== 'current' && activeTab !== 'neilHybrid' && activeTab !== 'neilOptimistic';
+        var isCov = activeTab !== 'current' && activeTab !== 'neilHybrid' && activeTab !== 'neilOptimistic' && activeTab !== 'hybridArch';
 
         var items = [
             {k:'bsl-tarana',n:'BSLs - Tarana Served',c:'#3498db',shape:'dot',ct:bslTarana.length},
@@ -538,6 +646,12 @@ try {
             items.push({k:null,n:'Colocation',c:'#9b59b6',shape:'dot',ct:scenarioMetrics.optimized.colocCount});
         }
         if (isCov) items.push({k:null,n:'Ketsen Sites',c:'#e67e22',shape:'rect',ct:scenarioMetrics[activeTab].ketsenCount});
+        if (activeTab==='hybridArch') {
+            items.push({k:'design-sites',n:'G2 Anchor Sites',c:'#e91e63',shape:'dot',ct:31});
+            items.push({k:null,n:'G2 Overlay (5km)',c:'#3498db',shape:'rect',ct:null});
+            items.push({k:null,n:'Ketsen PTP Mesh',c:'#e91e63',shape:'rect',ct:'30 links'});
+            items.push({k:null,n:'Ketsen PTMP (2km)',c:'#e91e63',shape:'dot',ct:null});
+        }
 
         p.innerHTML = items.map(function(i){
             var ch = i.k && layerVisibility[i.k] ? ' checked' : '';
@@ -662,6 +776,39 @@ try {
             '<div class="econ-section"><div class="econ-label">BEAD Award</div>'+
             '<div class="econ-row"><span>Total</span><span class="econ-val positive">'+m.bead.total+'</span></div>'+
             '<div class="econ-row" style="color:#e74c3c;font-style:italic;font-size:10px;margin-top:6px;"><span>Requires field validation of 10km RNm link budgets from elevation sites</span></div></div>';
+        } else if (activeTab==='hybridArch') {
+            h='<div class="econ-section"><div class="econ-label">Hybrid Architecture</div>'+
+            '<div class="econ-row"><span>Concept</span><span class="econ-val" style="color:#e91e63">G2 Overlay + Ketsen Underlay</span></div>'+
+            '<div class="econ-row"><span>Anchor Sites</span><span class="econ-val">'+m.neilAnchorCount+' ('+m.colocCount+' coloc, '+m.newBuildCount+' new)</span></div>'+
+            '<div class="econ-row"><span>Infill Sites Needed</span><span class="econ-val positive">0 (Ketsen PTMP)</span></div>'+
+            '<div class="econ-row"><span>G2 Sectors</span><span class="econ-val">'+m.sectors+'</span></div>'+
+            '<div class="econ-row"><span>DL Oversub</span><span class="econ-val">'+m.oversubDL+'</span></div>'+
+            '<div class="econ-row"><span>UL Oversub</span><span class="econ-val">'+m.oversubUL+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">Three-Layer Architecture</div>'+
+            '<div class="econ-row"><span style="color:#3498db">&#9679;</span><span>G2 Overlay (CBRS+6GHz)</span><span class="econ-val">5km coverage</span></div>'+
+            '<div class="econ-row"><span style="color:#e91e63">&#9632;</span><span>Ketsen PTP Mesh</span><span class="econ-val">Anchor backhaul</span></div>'+
+            '<div class="econ-row"><span style="color:#e91e63">&#9650;</span><span>Ketsen PTMP</span><span class="econ-val">2km last mile</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">CAPEX</div>';
+            m.capexBreakdown.forEach(function(item){
+                h+='<div class="econ-row"><span>'+item.label+'</span><span class="econ-val">'+item.val+'</span></div>';
+            });
+            h+='<div class="econ-row" style="border-top:1px solid rgba(150,150,200,0.3);padding-top:4px;margin-top:4px;"><span>Total CAPEX</span><span class="econ-val positive">'+m.totalInfraCapex+'</span></div>'+
+            '<div class="econ-row"><span>CAPEX / BSL</span><span class="econ-val positive">'+m.capexPerBSL+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">All Scenarios</div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Current</div><div class="econ-bar"><div class="econ-bar-fill" style="width:22%;background:#e74c3c;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$2.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Corrected</div><div class="econ-bar"><div class="econ-bar-fill" style="width:86%;background:#e67e22;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$9.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Optimized</div><div class="econ-bar"><div class="econ-bar-fill" style="width:80%;background:#27ae60;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$8.72M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#f39c12;">Neil Hybrid</div><div class="econ-bar"><div class="econ-bar-fill" style="width:100%;background:#f39c12;"></div></div><div style="font-size:10px;color:#f39c12;width:55px;text-align:right;">$10.91M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#1abc9c;">RNm 10km</div><div class="econ-bar"><div class="econ-bar-fill" style="width:40%;background:#1abc9c;"></div></div><div style="font-size:10px;color:#1abc9c;width:55px;text-align:right;">$4.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#e91e63;font-weight:700;">Hybrid Arch</div><div class="econ-bar"><div class="econ-bar-fill" style="width:50%;background:#e91e63;"></div></div><div style="font-size:10px;color:#e91e63;font-weight:700;width:55px;text-align:right;">'+m.totalInfraCapex+'</div></div></div>'+
+            '<div class="econ-section"><div class="econ-label">BEAD Headroom</div>'+
+            '<div class="econ-row"><span>BEAD Award</span><span class="econ-val positive">'+m.bead.total+'</span></div>'+
+            '<div class="econ-row"><span>CAPEX</span><span class="econ-val negative">'+m.totalInfraCapex+'</span></div>'+
+            '<div class="econ-row" style="border-top:1px solid rgba(150,150,200,0.3);padding-top:4px;margin-top:4px;"><span>Headroom</span><span class="econ-val positive">'+m.beadHeadroom+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">Lease OPEX</div>'+
+            '<div class="econ-row"><span>Annual Lease</span><span class="econ-val">'+m.y1Lease+'</span></div>'+
+            '<div class="econ-row"><span>vs Corrected</span><span class="econ-val positive">'+m.capexVsCorrected+'</span></div>'+
+            '<div class="econ-row"><span>vs Neil Hybrid</span><span class="econ-val positive">'+m.capexVsNeilHybrid+'</span></div></div>';
         }
         p.innerHTML = h;
     }
@@ -697,6 +844,13 @@ try {
                 return{label:s.name.length>25?s.name.substring(0,25)+'...':s.name,bsls:s.bsls,sectors:s.sectors,type:s.type+(isAnchor?' (Neil)':' (Infill)')};
             });
             t.textContent = m.siteLabel + ' (' + sites.length + ')';
+        } else if (activeTab==='hybridArch') {
+            var anchors = neilHybridSites.filter(function(s){ return neilAnchorIds.indexOf(s.id) >= 0; });
+            sites = anchors.slice().sort(function(a,b){return b.bsls-a.bsls;}).map(function(s){
+                var isColoc = s.type === 'ELNK' || s.type === 'ASR';
+                return{label:s.name.length>25?s.name.substring(0,25)+'...':s.name,bsls:s.bsls,sectors:s.sectors,type:s.type+(isColoc?' (Coloc)':' (New)')};
+            });
+            t.textContent = m.siteLabel + ' (' + sites.length + ')';
         }
         var hdr = showType ? '<th>SITE</th><th>BSLS</th><th>SEC</th><th>TYPE</th>' : '<th>SITE</th><th>BSLS</th><th>SEC</th><th>LAT</th><th>LON</th>';
         var rows = sites.slice(0,25).map(function(s){
@@ -715,7 +869,12 @@ try {
             document.getElementById('kpi-towers').textContent = m.siteLabel;
         }
         document.getElementById('kpi-capex').textContent = m.infraCapex + ' Infra CAPEX';
-        document.getElementById('kpi-tech').textContent = m.ketsenCount + ' Ketsen Gateways';
+        if (activeTab==='hybridArch') {
+            document.getElementById('kpi-tech').textContent = 'G2 + Ketsen Hybrid';
+            document.getElementById('kpi-towers').textContent = m.siteLabel;
+        } else {
+            document.getElementById('kpi-tech').textContent = m.ketsenCount + ' Ketsen Gateways';
+        }
     }
     window.updateKPIs = updateKPIs;
 
@@ -725,7 +884,7 @@ try {
         document.querySelector('.tab-btn.'+tab).classList.add('active');
         if (tab==='current'){renderCurrent();}
         else if (tab==='corrected'){renderCorrected();}
-        else if (tab==='optimized'){renderOptimized();}else if (tab==='neilHybrid'){renderNeilHybrid();}else{renderNeilOptimistic();}
+        else if (tab==='optimized'){renderOptimized();}else if (tab==='neilHybrid'){renderNeilHybrid();}else if (tab==='neilOptimistic'){renderNeilOptimistic();}else if (tab==='hybridArch'){renderHybridArch();}
         renderCoverage();
         if (layerVisibility['design-sites']) layers.design.addTo(map);
         if (layerVisibility['coverage']) layers.coverage.addTo(map);
