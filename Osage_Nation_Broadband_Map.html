@@ -26,7 +26,6 @@
     .legend-label { color: #c9d1d9; }
     .legend-count { color: #6e7681; font-size: 11px; }
     .legend-fiber-built { height: 2px; width: 16px; background: #22c55e; }
-    .legend-fiber-planned { height: 2px; width: 16px; background: #3b82f6; border-top: 1px dashed; }
     
     .sidebar-section { padding: 16px; border-bottom: 1px solid #30363d; }
     .sidebar-section h3 { font-size: 13px; font-weight: 600; color: #f0f6fc; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -227,10 +226,6 @@
         <label for="layer-cbrs">CBRS Coverage Zones</label>
       </div>
       <div class="layer-item">
-        <input type="checkbox" id="layer-fiber-planned">
-        <label for="layer-fiber-planned">Planned Fiber Routes</label>
-      </div>
-      <div class="layer-item">
         <input type="checkbox" id="layer-communities">
         <label for="layer-communities">Community Labels</label>
       </div>
@@ -330,7 +325,6 @@ const LAYER_METADATA = {
   grants: { source: 'Osage_Nation_Broadband_Grants_2017-2026.xlsx (STS LLC grant summary sent to Berbon Hamilton 3/11/2026), OBO CPF Grant Agreement CPF-XX183, OBO BEAD Tribal Outreach List', as_of_date: '2026-03-11', confidence: 'high', data_owner: 'STS LLC / AtLink / OBO', business_relevance: '12 grants, $148.7M public funding ($172M incl. ISP co-investment), USDA/NTIA/OBO/Tribal, 2017-2026', action_required: 'Confirm BEAD match % with OBO (15% vs 25%), engage appraiser for Community Connect FMV', category: 'authoritative', decision: 'active' },
   bead: { source: 'OBO/SIS BEAD Final Proposal Award Map (QGIS export Aug 2025), OBO Tribal BEAD Outreach List', as_of_date: '2025-08 / 2026-03', confidence: 'medium', data_owner: 'Oklahoma Broadband Office / Osage Nation', business_relevance: 'CM61-BEAD-OK-239-1497: Osage Nation FTTH Expansion, ~$44M subgrant, CPP $20,842/passing', action_required: 'Confirm match % with OBO, obtain official project area shapefile', category: 'strategic', decision: 'active' },
   cbrs: { source: 'Conceptual coverage estimate (not RF-modeled)', as_of_date: '2026-03', confidence: 'low', data_owner: 'AtLink Engineering', business_relevance: 'Approximate Tarana CBRS wireless zones', action_required: 'Replace with actual RF propagation analysis', category: 'estimated', decision: 'validate_first' },
-  fiberPlanned: { source: 'Pre-design conceptual routes', as_of_date: '2026-03', confidence: 'low', data_owner: 'AtLink Engineering', business_relevance: 'Conceptual future fiber corridors', action_required: 'Replace with engineering design routes', category: 'strategic', decision: 'validate_first' },
   communities: { source: 'Internal reference', as_of_date: '2026-03', confidence: 'medium', data_owner: 'AtLink', business_relevance: 'Community reference points', action_required: null, category: 'estimated', decision: 'not_actionable' },
   keyIssues: { source: 'Internal risk register', as_of_date: '2026-04', confidence: 'medium', data_owner: 'Sam Curtis / CEO', business_relevance: 'Active risks requiring attention', action_required: 'Review and update weekly', category: 'temporary', decision: 'validate_first' },
   conflicts: { source: 'Internal', as_of_date: '2026-04', confidence: 'medium', data_owner: 'Map team', business_relevance: 'Known data source conflicts', action_required: 'Reconcile with field validation', category: 'temporary', decision: 'validate_first' },
@@ -427,7 +421,6 @@ function initMap() {
   createGrantLayer();
   createBeadLayer();
   createCbrsLayer();
-  createPlannedFiberLayer();
   createCommunitiesLayer();
   createRiskLayer();
   createConflictLayer();
@@ -484,7 +477,6 @@ function getLayerName(id) {
     'grants': 'grants',
     'bead': 'bead',
     'cbrs': 'cbrs',
-    'fiber-planned': 'fiberPlanned',
     'communities': 'communities',
     'risks': 'risks',
     'conflicts': 'conflicts',
@@ -740,22 +732,6 @@ function createCbrsLayer() {
   state.layers.cbrs = group;
 }
 
-function createPlannedFiberLayer() {
-  const group = L.featureGroup();
-  const planned = [
-    [[36.5, -96.3], [36.7, -96.2]],
-    [[36.4, -96.6], [36.6, -96.5]],
-    [[36.8, -96.1], [36.9, -96.0]],
-    [[36.3, -96.8], [36.4, -96.6]],
-    [[36.6, -96.9], [36.8, -96.7]]
-  ];
-  planned.forEach((route, idx) => {
-    L.polyline(route, {color: '#3b82f6', weight: 2, opacity: 0.6, dashArray: '5,5'})
-      .bindPopup(buildLayerPopup('fiberPlanned', `Planned Fiber Route ${idx + 1}<br>Pre-design conceptual route`))
-      .addTo(group);
-  });
-  state.layers.fiberPlanned = group;
-}
 
 function createCommunitiesLayer() {
   const group = L.featureGroup();
@@ -810,42 +786,41 @@ function applyView(view) {
       on: ['reservation', 'bslLocations', 'towers', 'fiberBackbone', 'fiberBowring', 'fiberPawhuska',
            'fiberGrayhorse', 'fiberFairfax', 'communities', 'grants'],
       off: ['fiberOther', 'infrastructurePoints', 'westernNtia', 'competitors', 'bead', 'cbrs',
-            'fiberPlanned', 'risks', 'conflicts', 'annotations']
+            'risks', 'conflicts', 'annotations']
     },
     engineering: {
       center: [36.55, -96.50], zoom: 10,
       on: ['reservation', 'towers', 'fiberBackbone', 'fiberBowring', 'fiberPawhuska',
            'fiberGrayhorse', 'fiberFairfax', 'fiberOther', 'infrastructurePoints', 'westernNtia',
            'bslLocations', 'cbrs'],
-      off: ['competitors', 'grants', 'communities', 'bead', 'fiberPlanned', 'risks', 'conflicts', 'annotations']
+      off: ['competitors', 'grants', 'communities', 'bead', 'risks', 'conflicts', 'annotations']
     },
     competitive: {
       center: [36.55, -96.50], zoom: 9,
       on: ['reservation', 'bslLocations', 'competitors', 'towers', 'fiberBackbone', 'bead'],
       off: ['fiberBowring', 'fiberPawhuska', 'fiberGrayhorse', 'fiberFairfax', 'fiberOther',
-            'infrastructurePoints', 'westernNtia', 'grants', 'cbrs', 'fiberPlanned',
-            'communities', 'risks', 'conflicts', 'annotations']
+            'infrastructurePoints', 'westernNtia', 'grants', 'cbrs',            'communities', 'risks', 'conflicts', 'annotations']
     },
     pawhuska: {
       center: [36.67, -96.34], zoom: 12,
       on: ['reservation', 'bslLocations', 'towers', 'fiberBackbone', 'fiberPawhuska',
            'infrastructurePoints', 'communities'],
       off: ['fiberBowring', 'fiberGrayhorse', 'fiberFairfax', 'fiberOther', 'westernNtia',
-            'competitors', 'grants', 'bead', 'cbrs', 'fiberPlanned', 'risks', 'conflicts', 'annotations']
+            'competitors', 'grants', 'bead', 'cbrs', 'risks', 'conflicts', 'annotations']
     },
     fairfax: {
       center: [36.58, -96.70], zoom: 12,
       on: ['reservation', 'bslLocations', 'towers', 'fiberBackbone', 'fiberFairfax',
            'fiberBowring', 'infrastructurePoints', 'westernNtia', 'communities'],
       off: ['fiberPawhuska', 'fiberGrayhorse', 'fiberOther', 'competitors', 'grants',
-            'bead', 'cbrs', 'fiberPlanned', 'risks', 'conflicts', 'annotations']
+            'bead', 'cbrs', 'risks', 'conflicts', 'annotations']
     },
     grayhorse: {
       center: [36.89, -96.76], zoom: 12,
       on: ['reservation', 'bslLocations', 'towers', 'fiberBackbone', 'fiberGrayhorse',
            'infrastructurePoints', 'communities'],
       off: ['fiberBowring', 'fiberPawhuska', 'fiberFairfax', 'fiberOther', 'westernNtia',
-            'competitors', 'grants', 'bead', 'cbrs', 'fiberPlanned', 'risks', 'conflicts', 'annotations']
+            'competitors', 'grants', 'bead', 'cbrs', 'risks', 'conflicts', 'annotations']
     }
   };
 
@@ -876,7 +851,7 @@ function applyView(view) {
     fiberFairfax: 'fiber-fairfax', fiberOther: 'fiber-other',
     infrastructurePoints: 'infrastructure-points', westernNtia: 'western-ntia',
     competitors: 'competitors', grants: 'grants', bead: 'bead', cbrs: 'cbrs',
-    fiberPlanned: 'fiber-planned', communities: 'communities', risks: 'risks',
+    communities: 'communities', risks: 'risks',
     conflicts: 'conflicts', annotations: 'annotations'
   };
 
