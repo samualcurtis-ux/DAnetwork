@@ -64,6 +64,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .legend-item:hover { background: rgba(100, 120, 160, 0.15); }
 .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 .legend-rect { width: 12px; height: 12px; flex-shrink: 0; border-radius: 2px; }
+.legend-diamond { width: 10px; height: 10px; flex-shrink: 0; transform: rotate(45deg); border: 2px solid #fff; }
+.legend-dash { width: 20px; height: 0; flex-shrink: 0; border-top: 2px dashed; }
+.legend-ring { width: 12px; height: 12px; flex-shrink: 0; border-radius: 50%; border: 2px solid; background: transparent; }
 .legend-label { font-size: 12px; color: #ccc; flex: 1; }
 .legend-count { font-size: 11px; color: #888; }
 .legend-item input[type="checkbox"] { accent-color: #3498db; cursor: pointer; width: 16px; height: 16px; }
@@ -647,16 +650,22 @@ try {
         }
         if (isCov) items.push({k:null,n:'Ketsen Sites',c:'#e67e22',shape:'rect',ct:scenarioMetrics[activeTab].ketsenCount});
         if (activeTab==='hybridArch') {
-            items.push({k:'design-sites',n:'G2 Anchor Sites',c:'#e91e63',shape:'dot',ct:31});
-            items.push({k:null,n:'G2 Overlay (5km)',c:'#3498db',shape:'rect',ct:null});
-            items.push({k:null,n:'Ketsen PTP Mesh',c:'#e91e63',shape:'rect',ct:'30 links'});
-            items.push({k:null,n:'Ketsen PTMP (2km)',c:'#e91e63',shape:'dot',ct:null});
+            items.push({k:'design-sites',n:'Anchor Coloc (ASR/ELNK)',c:'#e91e63',shape:'diamond',ct:21});
+            items.push({k:null,n:'Anchor New Build',c:'#e91e63',shape:'dot',ct:10});
+            items.push({k:null,n:'Ketsen PTP Mesh Links',c:'#e91e63',shape:'dash',ct:'30 links'});
+            items.push({k:null,n:'G2 Overlay Coverage (5km)',c:'#3498db',shape:'ring',ct:null});
+            items.push({k:null,n:'Ketsen PTMP Coverage (2km)',c:'#e91e63',shape:'ring',ct:null});
         }
 
         p.innerHTML = items.map(function(i){
             var ch = i.k && layerVisibility[i.k] ? ' checked' : '';
             var cb = i.k ? '<input type="checkbox"'+ch+' onchange="toggleMapLayer(\''+i.k+'\')">' : '<div style="width:16px"></div>';
-            var dot = i.shape==='rect' ? '<div class="legend-rect" style="background:'+i.c+';opacity:0.5;border:1px dashed '+i.c+';"></div>' : '<div class="legend-dot" style="background:'+i.c+';"></div>';
+            var dot;
+            if (i.shape==='rect') dot = '<div class="legend-rect" style="background:'+i.c+';opacity:0.5;border:1px dashed '+i.c+';"></div>';
+            else if (i.shape==='diamond') dot = '<div class="legend-diamond" style="background:'+i.c+';"></div>';
+            else if (i.shape==='dash') dot = '<div class="legend-dash" style="border-color:'+i.c+';"></div>';
+            else if (i.shape==='ring') dot = '<div class="legend-ring" style="border-color:'+i.c+';"></div>';
+            else dot = '<div class="legend-dot" style="background:'+i.c+';"></div>';
             return '<div class="legend-item">'+cb+dot+'<div class="legend-label">'+i.n+'</div>'+(i.ct!==null?'<div class="legend-count">('+i.ct.toLocaleString()+')</div>':'')+'</div>';
         }).join('');
     }
