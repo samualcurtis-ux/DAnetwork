@@ -302,7 +302,7 @@ const COMMUNITIES = [
   {name:"Fairfax",lat:36.5781,lon:-96.7044},
   {name:"Hominy",lat:36.4141,lon:-96.3953},
   {name:"Grayhorse",lat:36.8928,lon:-96.7644},
-  {name:"Bowring",lat:36.6710,lon:-96.3260},
+  {name:"Bowring",lat:36.4740,lon:-96.0700},
   {name:"Barnsdall",lat:36.5623,lon:-96.1620},
   {name:"Skiatook",lat:36.3684,lon:-96.0013},
   {name:"Wynona",lat:36.5557,lon:-96.3268},
@@ -690,7 +690,7 @@ function createGrantLayer() {
     {lat: 36.58, lon: -96.70, name: 'NTIA TBCP - Fairfax/Western Boundary', agency: 'NTIA', amount: 'See workbook', year: '2021+', status: 'Active', note: '99 service drops mapped in KMZ (Western Boundary NTIA)'},
     {lat: 36.67, lon: -96.34, name: 'ARPA CPF - AtLink (CPF-XX183)', agency: 'OBO / US Treasury', amount: '$2.36M', year: 2026, status: 'Unsigned', note: 'Capital Projects Fund via Oklahoma Broadband Office, ARPA Sec. 604'},
     {lat: 36.55, lon: -96.50, name: 'OBO BEAD Subgrant - Osage Nation FTTH Expansion', agency: 'OBO / NTIA BEAD', amount: '~$44M', year: '2026+', status: 'Application', note: 'CM61-BEAD-OK-239-1497, CPP $20,842/passing. Match TBD (15% vs 25%)'},
-    {lat: 36.65, lon: -96.55, name: 'Bluepeak Fiber - Pawhuska', agency: 'Private / Municipal', amount: 'Private', year: 2022, status: 'Active', note: 'City agreement with Bluepeak (competitor entry)'}
+    {lat: 36.6674, lon: -96.3372, name: 'Bluepeak Fiber - Pawhuska', agency: 'Private / Municipal', amount: 'Private', year: 2022, status: 'Active', note: 'City agreement with Bluepeak (competitor entry)'}
   ];
 
   grants.forEach(grant => {
@@ -743,16 +743,23 @@ function createBeadLayer() {
 
 function createCbrsLayer() {
   const group = L.featureGroup();
+  // CBRS zones centered on actual Osage tower locations from AtLink KMZ
+  // Radius is conceptual (~6km) - NOT RF-modeled propagation
   const cbrsZones = [
-    {lat: 36.55, lon: -96.3, radius: 0.15},
-    {lat: 36.7, lon: -96.5, radius: 0.12},
-    {lat: 36.4, lon: -96.6, radius: 0.14},
-    {lat: 36.8, lon: -96.1, radius: 0.10},
-    {lat: 36.3, lon: -96.2, radius: 0.13}
+    {name: 'Big Bertha', lat: 36.201867, lon: -96.004592, radius: 6000},
+    {name: 'Skiatook', lat: 36.36513, lon: -96.028235, radius: 6000},
+    {name: 'Cleveland Tower', lat: 36.306508, lon: -96.479944, radius: 6000},
+    {name: 'Eastern Ericsson', lat: 36.535308, lon: -96.555089, radius: 7000},
+    {name: 'Western Ericsson', lat: 36.536564, lon: -96.901608, radius: 7000},
+    {name: 'Pawhuska CTI', lat: 36.648947, lon: -96.33439, radius: 6000},
+    {name: 'Grayhorse', lat: 36.550268, lon: -96.652667, radius: 6000},
+    {name: 'Hominy Tower', lat: 36.419907, lon: -96.401436, radius: 6000},
+    {name: 'Bowring Tower', lat: 36.87708, lon: -96.12489, radius: 6000},
+    {name: 'Barnsdall Tower', lat: 36.562106, lon: -96.169709, radius: 6000}
   ];
   cbrsZones.forEach(zone => {
-    L.circle([zone.lat, zone.lon], {radius: zone.radius * 111000, color: '#06b6d4', weight: 1, opacity: 0.2, fill: true, fillColor: '#06b6d4', fillOpacity: 0.05})
-      .bindPopup(buildLayerPopup('cbrs', '<strong>CBRS Coverage Zone</strong><br>Conceptual coverage estimate. Not RF-modeled.'))
+    L.circle([zone.lat, zone.lon], {radius: zone.radius, color: '#06b6d4', weight: 1, opacity: 0.3, fill: true, fillColor: '#06b6d4', fillOpacity: 0.08})
+      .bindPopup(buildLayerPopup('cbrs', `<strong>CBRS Zone - ${zone.name}</strong><br>Conceptual ~${(zone.radius/1000).toFixed(0)}km radius. Not RF-modeled.<br>Centered on AtLink tower location.`))
       .addTo(group);
   });
   state.layers.cbrs = group;
