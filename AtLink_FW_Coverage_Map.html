@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AtLink Federated Wireless RF Coverage Analysis</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script src="https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <style>
         * {
             margin: 0;
@@ -522,16 +521,18 @@
             layerGroup.sites.addLayer(marker);
         });
 
-        // Add heatmap
-        const heatData = fwBSLsRaw.map(point => [point[0], point[1], point[2] === 4 ? 1.0 : point[2] === 3 ? 0.7 : point[2] === 2 ? 0.4 : 0.2]);
-        const heatmap = L.heatLayer(heatData, {
-            radius: 15,
-            blur: 20,
-            max: 0.8,
-            minOpacity: 0.2,
-            gradient: {0.2: '#ef4444', 0.5: '#f59e0b', 0.7: '#3b82f6', 0.9: '#10b981', 1.0: '#0ea5e9'}
-        });
-        layerGroup.heatmap.addLayer(heatmap);
+        // Add heatmap (with fallback if leaflet-heat plugin failed to load)
+        try {
+            const heatData = fwBSLsRaw.map(point => [point[0], point[1], point[2] === 4 ? 1.0 : point[2] === 3 ? 0.7 : point[2] === 2 ? 0.4 : 0.2]);
+            const heatmap = L.heatLayer(heatData, {
+                radius: 15,
+                blur: 20,
+                max: 0.8,
+                minOpacity: 0.2,
+                gradient: {0.2: '#ef4444', 0.5: '#f59e0b', 0.7: '#3b82f6', 0.9: '#10b981', 1.0: '#0ea5e9'}
+            });
+            layerGroup.heatmap.addLayer(heatmap);
+        } catch(e) { console.warn('Heatmap plugin not available:', e); }
 
         // Add speed tier points (off by default)
         const tierColors = {1: '#ef4444', 2: '#f59e0b', 3: '#3b82f6', 4: '#10b981'};
