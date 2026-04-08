@@ -1221,7 +1221,6 @@ obligatedBSLs.forEach(b => {
   layers.obligated.addLayer(m);
 });
 layers.obligated.addTo(map);
-    layers.fwSites.addTo(map);
 
     // ============================================================
     // FEDERATED WIRELESS RF COVERAGE LAYER
@@ -1266,7 +1265,10 @@ layers.obligated.addTo(map);
       });
     }
 
-
+    // Add FW sites to map (checked by default), coverage starts off
+    layers.fwSites.addTo(map);
+    layerState['fwSites'] = true;
+    layerState['fwCoverage'] = false;
 
 // Update layer toggle keys to include BSL layers
 
