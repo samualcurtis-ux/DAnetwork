@@ -452,7 +452,7 @@ var scenarioMetrics = {
         oversubDL: '20:1',
         oversubUL: '33:1',
     },
-        welinkPrelim:{siteCount:82,bslsServed:11346,infraCapex:'$9.5M',capexPerBSL:'$838',beadHeadroom:'$6.6M',p4Sites:28,p5Sites:17,infillSites:37,coverage5km:'84.4%',coverageWithInfill:'100%'}
+        welinkPrelim:{siteCount:82,bslsServed:11346,bslsCovPct:'100%',infraCapex:'$9.5M',capexPerBSL:'$838',beadHeadroom:'$6.6M',p4Sites:28,p5Sites:17,infillSites:37,coverage5km:'84.4%',coverageWithInfill:'100%',fiberSites:6,tSectors:0,ketsenCount:0,towerLeases:'$984K',powerNoc:'$396K',annualOpex:'$1.38M',g2Equipment:'$0',siteAccessories:'$3.08M',ketsenGateways:'$0',contingency:'$0.64M'}
 };
 
 try {
@@ -522,7 +522,7 @@ try {
     // === COVERAGE RENDERING ===
     function renderCoverage() {
         layers.coverage.clearLayers();
-        if (activeTab === 'current' || activeTab === 'hybridArch') return;
+        if (activeTab === 'current' || activeTab === 'hybridArch' || activeTab === 'welinkPrelim') return;
 
         // Tarana sector wedges (blue, semi-transparent)
         for (var sid in taranaWedges) {
@@ -930,6 +930,35 @@ function toggleMapLayer(ln) {
             '<div class="econ-row"><span>Annual Lease</span><span class="econ-val">'+m.y1Lease+'</span></div>'+
             '<div class="econ-row"><span>vs Corrected</span><span class="econ-val positive">'+m.capexVsCorrected+'</span></div>'+
             '<div class="econ-row"><span>vs Neil Hybrid</span><span class="econ-val positive">'+m.capexVsNeilHybrid+'</span></div></div>';
+        } else if (activeTab==='welinkPrelim') {
+            h='<div class="econ-section"><div class="econ-label">WeLink Preliminary Design</div>'+
+            '<div class="econ-row"><span>P4 Tower Sites (WeLink)</span><span class="econ-val">'+m.p4Sites+'</span></div>'+
+            '<div class="econ-row"><span>P5 Tower Sites (WeLink)</span><span class="econ-val">'+m.p5Sites+'</span></div>'+
+            '<div class="econ-row"><span>Infill Sites (computed)</span><span class="econ-val">'+m.infillSites+'</span></div>'+
+            '<div class="econ-row"><span>Total Sites</span><span class="econ-val">'+m.siteCount+'</span></div>'+
+            '<div class="econ-row"><span>BSLs Served</span><span class="econ-val positive">'+m.bslsServed.toLocaleString()+' ('+m.bslsCovPct+')</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">Coverage</div>'+
+            '<div class="econ-row"><span>WeLink Sites Only (5km)</span><span class="econ-val">'+m.coverage5km+'</span></div>'+
+            '<div class="econ-row"><span>With Infill Sites</span><span class="econ-val positive">'+m.coverageWithInfill+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">CAPEX</div>'+
+            '<div class="econ-row"><span>Site Accessories</span><span class="econ-val">'+m.siteAccessories+'</span></div>'+
+            '<div class="econ-row"><span>Contingency</span><span class="econ-val">'+m.contingency+'</span></div>'+
+            '<div class="econ-row" style="border-top:1px solid rgba(150,150,200,0.3);padding-top:4px;margin-top:4px;"><span>Total Infra CAPEX</span><span class="econ-val negative">'+m.infraCapex+'</span></div>'+
+            '<div class="econ-row"><span>CAPEX / BSL</span><span class="econ-val">'+m.capexPerBSL+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">Annual OPEX</div>'+
+            '<div class="econ-row"><span>Tower Leases</span><span class="econ-val">'+m.towerLeases+'</span></div>'+
+            '<div class="econ-row"><span>Power + NOC</span><span class="econ-val">'+m.powerNoc+'</span></div>'+
+            '<div class="econ-row" style="border-top:1px solid rgba(150,150,200,0.3);padding-top:4px;margin-top:4px;"><span>Total Annual OPEX</span><span class="econ-val negative">'+m.annualOpex+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">BEAD Headroom</div>'+
+            '<div class="econ-row"><span>BEAD Award</span><span class="econ-val positive">$16.06M</span></div>'+
+            '<div class="econ-row"><span>Infra CAPEX</span><span class="econ-val negative">'+m.infraCapex+'</span></div>'+
+            '<div class="econ-row" style="border-top:1px solid rgba(150,150,200,0.3);padding-top:4px;margin-top:4px;"><span>Headroom</span><span class="econ-val positive">'+m.beadHeadroom+'</span></div></div>'+
+            '<div class="econ-section"><div class="econ-label">All Scenarios</div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Current</div><div class="econ-bar"><div class="econ-bar-fill" style="width:22%;background:#e74c3c;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$2.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Corrected</div><div class="econ-bar"><div class="econ-bar-fill" style="width:86%;background:#e67e22;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$9.38M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Optimized</div><div class="econ-bar"><div class="econ-bar-fill" style="width:80%;background:#27ae60;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$8.72M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#aaa;">Neil Hybrid</div><div class="econ-bar"><div class="econ-bar-fill" style="width:100%;background:#f39c12;"></div></div><div style="font-size:10px;color:#aaa;width:55px;text-align:right;">$10.91M</div></div>'+
+            '<div class="econ-bar-container"><div style="width:80px;font-size:10px;color:#ff6f00;font-weight:700;">WeLink Prelim</div><div class="econ-bar"><div class="econ-bar-fill" style="width:87%;background:#ff6f00;"></div></div><div style="font-size:10px;color:#ff6f00;font-weight:700;width:55px;text-align:right;">'+m.infraCapex+'</div></div></div>';
         }
         p.innerHTML = h;
     }
@@ -972,6 +1001,11 @@ function toggleMapLayer(ln) {
                 return{label:s.name.length>25?s.name.substring(0,25)+'...':s.name,bsls:s.bsls,sectors:s.sectors,type:s.type+(isColoc?' (Coloc)':' (New)')};
             });
             t.textContent = m.siteLabel + ' (' + sites.length + ')';
+        } else if (activeTab==='welinkPrelim') {
+            sites = welinkPrelimSites.slice().sort(function(a,b){return (b.bsls||0)-(a.bsls||0);}).map(function(s){
+                return{label:s.name.length>25?s.name.substring(0,25)+'...':s.name,bsls:s.bsls||'--',sectors:'--',type:s.type+' ('+s.src+')'};
+            });
+            t.textContent = 'WeLink Preliminary Sites (' + sites.length + ')';
         }
         var hdr = showType ? '<th>SITE</th><th>BSLS</th><th>SEC</th><th>TYPE</th>' : '<th>SITE</th><th>BSLS</th><th>SEC</th><th>LAT</th><th>LON</th>';
         var rows = sites.slice(0,25).map(function(s){
@@ -1010,8 +1044,9 @@ function switchTab(tab) {
         renderCoverage();
         if (layerVisibility['design-sites']) layers.design.addTo(map);
         if (layerVisibility['coverage']) layers.coverage.addTo(map);
-        document.getElementById('econ-title').textContent=tab.charAt(0).toUpperCase()+tab.slice(1)+' Design Economics';
-        document.getElementById('legend-title').textContent=tab.charAt(0).toUpperCase()+tab.slice(1)+' Design Layers';
+        var tabLabel = tab==='welinkPrelim' ? 'WeLink Preliminary' : tab==='neilHybrid' ? 'Neil Hybrid' : tab==='neilOptimistic' ? 'Neil Optimistic' : tab==='hybridArch' ? 'Hybrid Architecture' : tab.charAt(0).toUpperCase()+tab.slice(1);
+        document.getElementById('econ-title').textContent=tabLabel+' Design Economics';
+        document.getElementById('legend-title').textContent=tabLabel+' Design Layers';
         renderEconomics();renderSitesTable();renderLegend();updateKPIs();
     }
     window.switchTab = switchTab;
