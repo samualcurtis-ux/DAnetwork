@@ -37,6 +37,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .tab-btn.active.neilHybrid { background: #f39c12; }
     .tab-btn.active.neilOptimistic { background: #1abc9c; }
     .tab-btn.active.hybridArch { background: #e91e63; }
+.tab-btn.active.welinkPrelim { background: #ff6f00; }
+.legend-triangle { width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:10px solid #ff6f00; display:inline-block; }
 #header-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .kpi-badge { padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; background: rgba(100, 100, 150, 0.4); color: #ddd; border: 1px solid rgba(150, 150, 200, 0.3); }
 .kpi-badge.green { background: rgba(39, 174, 96, 0.3); color: #2ecc71; border-color: rgba(46, 204, 113, 0.4); }
@@ -96,6 +98,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <button class="tab-btn neilHybrid" onclick="switchTab('neilHybrid')">Neil Hybrid</button>
         <button class="tab-btn neilOptimistic" onclick="switchTab('neilOptimistic')">Neil Optimistic</button>
         <button class="tab-btn hybridArch" onclick="switchTab('hybridArch')">Hybrid Architecture</button>
+<button class="tab-btn welinkPrelim" onclick="switchTab('welinkPrelim')">WeLink Preliminary</button>
     </div>
     <div id="header-right">
         <div class="kpi-badge green"><span id="kpi-bsls">9,584 BSLs (84.5%)</span></div>
@@ -346,7 +349,7 @@ var scenarioMetrics = {
         beadHeadroom: '$10.6M',
         capexBreakdown: [
             {label:'G2 BN Overlay (98 sec)', val:'$2.06M'},
-            {label:'Ketsen PTP Mesh (30 links)', val:'$0.72M'},
+{label:'Ketsen PTP Mesh (30 links)', val:'$0.72M'},
             {label:'Ketsen PTMP CPE (1,135)', val:'$1.14M'},
             {label:'Coloc Setup (21)', val:'$0.53M'},
             {label:'Tower Build (10)', val:'$0.50M'},
@@ -362,7 +365,8 @@ var scenarioMetrics = {
         archDescription: 'G2 wide-area overlay + Ketsen mmWave PTP mesh + Ketsen PTMP last mile',
         oversubDL: '20:1',
         oversubUL: '33:1',
-    }
+    },
+        welinkPrelim:{siteCount:82,bslsServed:11346,infraCapex:'$9.5M',capexPerBSL:'$838',beadHeadroom:'$6.6M',p4Sites:28,p5Sites:17,infillSites:37,coverage5km:'84.4%',coverageWithInfill:'100%'}
 };
 
 try {
@@ -617,7 +621,25 @@ try {
             }
         });
     }
-    function toggleMapLayer(ln) {
+    
+function renderWelinkPrelim() {
+  const radius5km = 5000;
+  welinkPrelimSites.forEach(s => {
+    const color = s.src === 'welink' ? (s.type === 'P4' ? '#ff6f00' : '#ffab00') : '#4caf50';
+    const marker = s.src === 'welink' ? 
+      L.circleMarker([s.lat, s.lon], {radius:7, fillColor:color, color:'#333', weight:1.5, fillOpacity:0.9}) :
+      L.circleMarker([s.lat, s.lon], {radius:5, fillColor:color, color:'#333', weight:1, fillOpacity:0.7});
+    marker.bindPopup('<b>'+s.name+'</b><br>Type: '+s.type+(s.bsls?' | BSLs added: '+s.bsls:'')+'<br>Source: '+s.src);
+    marker.addTo(map);
+    coverageLayers.push(marker);
+    // Coverage circle
+    const circle = L.circle([s.lat, s.lon], {radius:radius5km, fillColor:color, fillOpacity:0.06, color:color, weight:0.5, opacity:0.3});
+    circle.addTo(map);
+    coverageLayers.push(circle);
+  });
+}
+
+function toggleMapLayer(ln) {
         var v = !layerVisibility[ln]; layerVisibility[ln] = v;
         var m = { 'sales-areas': layers.sa, 'bsl-tarana': layers.bslT, 'bsl-ketsen': layers.bslK, 'fiber-sites': layers.fiber, 'design-sites': layers.design, 'coverage': layers.coverage, 'da-towers': layers.daTowers, 'el-towers': layers.elTowers };
         var l = m[ln]; if (l) { v ? l.addTo(map) : map.removeLayer(l); }
@@ -629,7 +651,7 @@ try {
         // Filter to PHX-only sales areas
         var phxAreas = salesAreas.filter(function(s){return s.info&&s.info['Sales Area Name']&&s.info['Sales Area Name'].indexOf('PHX1')===0;});
         var phxActive = phxAreas.filter(function(s){return s.info&&s.info['Sales Areas Status']==='Active';}).length;
-        var isCov = activeTab !== 'current' && activeTab !== 'neilHybrid' && activeTab !== 'neilOptimistic' && activeTab !== 'hybridArch';
+        var isCov = activeTab !== 'current' && activeTab !== 'neilHybrid' && activeTab !== 'neilOptimistic' && activeTab !== 'hybridArch' && activeTab !== 'welinkPrelim';
 
         var items = [
             {k:'bsl-tarana',n:'BSLs - Tarana Served',c:'#3498db',shape:'dot',ct:bslTarana.length},
@@ -655,6 +677,12 @@ try {
             items.push({k:null,n:'Ketsen PTP Mesh Links',c:'#e91e63',shape:'dash',ct:'30 links'});
             items.push({k:null,n:'G2 Overlay Coverage (5km)',c:'#3498db',shape:'ring',ct:null});
             items.push({k:null,n:'Ketsen PTMP Coverage (2km)',c:'#e91e63',shape:'ring',ct:null});
+        }
+        if (activeTab==='welinkPrelim') {
+            items.push({k:null,n:'P4 Tower (WeLink)',c:'#ff6f00',shape:'dot',ct:28});
+            items.push({k:null,n:'P5 Tower (WeLink)',c:'#ffab00',shape:'dot',ct:17});
+            items.push({k:null,n:'Infill Site (computed)',c:'#4caf50',shape:'dot',ct:37});
+            items.push({k:null,n:'5km Coverage Radius',c:'#ff6f00',shape:'ring',ct:null});
         }
 
         p.innerHTML = items.map(function(i){
@@ -887,13 +915,98 @@ try {
     }
     window.updateKPIs = updateKPIs;
 
-    function switchTab(tab) {
+    const welinkPrelimSites = [
+{name:'Water & Ice Car Wash',lat:33.30439,lon:-111.98447,type:'P4',src:'welink'},
+{name:'Cesar Chavez High School',lat:33.37606,lon:-112.14306,type:'P4',src:'welink'},
+{name:'Breaktime Car Wash',lat:33.37867,lon:-111.94594,type:'P4',src:'welink'},
+{name:'Banning Farms',lat:33.41208,lon:-112.20514,type:'P4',src:'welink'},
+{name:'Hardy and University',lat:33.42131,lon:-111.95189,type:'P4',src:'welink'},
+{name:'FELLARS',lat:33.43250,lon:-112.10655,type:'P4',src:'welink'},
+{name:'Dominy Property',lat:33.44067,lon:-112.23687,type:'P4',src:'welink'},
+{name:'Cotton Lane Baptist Churc',lat:33.52742,lon:-112.42837,type:'P4',src:'welink'},
+{name:'Valley West Animal Hospit',lat:33.55206,lon:-112.13342,type:'P4',src:'welink'},
+{name:'AZ BC6 CCI',lat:33.58731,lon:-112.10767,type:'P4',src:'welink'},
+{name:'SUN CITY NORTH',lat:33.68255,lon:-112.35430,type:'P4',src:'welink'},
+{name:'SHOGUN',lat:33.70575,lon:-112.10756,type:'P4',src:'welink'},
+{name:'PARADIGM',lat:33.80240,lon:-112.06507,type:'P4',src:'welink'},
+{name:'INGOT',lat:33.53054,lon:-112.32534,type:'P4',src:'welink'},
+{name:'SETH',lat:33.62722,lon:-111.99695,type:'P4',src:'welink'},
+{name:'BELL ROAD & CENTRAL A03042097',lat:33.63873,lon:-112.05897,type:'P4',src:'welink'},
+{name:'Glendale (Bethany Home Rd)',lat:33.52262,lon:-112.15233,type:'P4',src:'welink'},
+{name:'CAMPBELL & I-17 A03042103',lat:33.49920,lon:-112.11628,type:'P4',src:'welink'},
+{name:'Great Eagle Golf Club',lat:33.64092,lon:-112.43709,type:'P4',src:'welink'},
+{name:'AVN_Welink',lat:33.45176,lon:-112.33892,type:'P4',src:'welink'},
+{name:'Cechele Farms',lat:33.75544,lon:-111.94000,type:'P4',src:'welink'},
+{name:'Pleasant Promenade LLC',lat:33.66822,lon:-112.28117,type:'P4',src:'welink'},
+{name:'United Church of Christ',lat:33.61789,lon:-112.27458,type:'P4',src:'welink'},
+{name:'LAVEEN A03042135',lat:33.34492,lon:-112.18189,type:'P4',src:'welink'},
+{name:'Cave Creek Monopole',lat:33.74981,lon:-111.99225,type:'P4',src:'welink'},
+{name:'NULL',lat:33.57850,lon:-112.23033,type:'P4',src:'welink'},
+{name:'NULL',lat:33.61057,lon:-112.33648,type:'P4',src:'welink'},
+{name:'NULL',lat:33.65606,lon:-112.15036,type:'P4',src:'welink'},
+{name:'JOMAX A03042018',lat:33.72884,lon:-111.90910,type:'P5',src:'welink'},
+{name:'SHURGARD STORAGE',lat:33.58506,lon:-111.89030,type:'P5',src:'welink'},
+{name:'First Assembly of God',lat:33.59833,lon:-111.72881,type:'P5',src:'welink'},
+{name:'Jensen Hill',lat:33.44550,lon:-111.62263,type:'P5',src:'welink'},
+{name:'Stapley Jr High',lat:33.46185,lon:-111.75890,type:'P5',src:'welink'},
+{name:'Snedigar Farm',lat:33.22281,lon:-111.78026,type:'P5',src:'welink'},
+{name:'San Tan Feed',lat:33.21178,lon:-111.68261,type:'P5',src:'welink'},
+{name:'SOSSAMAN & CHANDLER HEIGHTS',lat:33.23481,lon:-111.69500,type:'P5',src:'welink'},
+{name:'WALGREENS',lat:33.24667,lon:-111.82487,type:'P5',src:'welink'},
+{name:'GERMANN & GILBERT A03042164',lat:33.28017,lon:-111.77831,type:'P5',src:'welink'},
+{name:'AZ QUEEN CREEK 801464',lat:33.24385,lon:-111.63284,type:'P5',src:'welink'},
+{name:'CHN1',lat:33.28924,lon:-111.83806,type:'P5',src:'welink'},
+{name:'Wendt Lot',lat:33.41714,lon:-111.73338,type:'P5',src:'welink'},
+{name:'Budget Self Storage',lat:33.39361,lon:-111.82514,type:'P5',src:'welink'},
+{name:'LIBERTY SCHOOL',lat:33.36142,lon:-111.68716,type:'P5',src:'welink'},
+{name:'AZGilbe_75',lat:33.29016,lon:-111.72002,type:'P5',src:'welink'},
+{name:'MARVA LAND',lat:33.30239,lon:-111.88954,type:'P5',src:'welink'},
+{name:'Infill-1',lat:33.7397,lon:-112.3919,type:'infill',src:'computed',bsls:401},
+{name:'Infill-2',lat:33.5080,lon:-112.2147,type:'infill',src:'computed',bsls:325},
+{name:'Infill-3',lat:33.7752,lon:-112.1133,type:'infill',src:'computed',bsls:150},
+{name:'Infill-4',lat:33.6378,lon:-111.9103,type:'infill',src:'computed',bsls:160},
+{name:'Infill-5',lat:33.7949,lon:-111.9721,type:'infill',src:'computed',bsls:101},
+{name:'Infill-6',lat:33.7230,lon:-112.2947,type:'infill',src:'computed',bsls:73},
+{name:'Infill-7',lat:33.3838,lon:-111.8927,type:'infill',src:'computed',bsls:54},
+{name:'Infill-8',lat:33.3316,lon:-111.6026,type:'infill',src:'computed',bsls:55},
+{name:'Infill-9',lat:33.5754,lon:-112.4187,type:'infill',src:'computed',bsls:60},
+{name:'Infill-10',lat:33.5140,lon:-112.2734,type:'infill',src:'computed',bsls:54},
+{name:'Infill-11',lat:33.5075,lon:-112.0186,type:'infill',src:'computed',bsls:29},
+{name:'Infill-12',lat:33.7017,lon:-112.2196,type:'infill',src:'computed',bsls:28},
+{name:'Infill-13',lat:33.4570,lon:-112.1833,type:'infill',src:'computed',bsls:31},
+{name:'Infill-14',lat:33.7235,lon:-111.8133,type:'infill',src:'computed',bsls:24},
+{name:'Infill-15',lat:33.6835,lon:-111.9877,type:'infill',src:'computed',bsls:20},
+{name:'Infill-16',lat:33.5248,lon:-111.9301,type:'infill',src:'computed',bsls:20},
+{name:'Infill-17',lat:33.4341,lon:-111.8909,type:'infill',src:'computed',bsls:18},
+{name:'Infill-18',lat:33.5167,lon:-112.0244,type:'infill',src:'computed',bsls:12},
+{name:'Infill-19',lat:33.4184,lon:-112.0253,type:'infill',src:'computed',bsls:15},
+{name:'Infill-20',lat:33.2856,lon:-111.5866,type:'infill',src:'computed',bsls:14},
+{name:'Infill-21',lat:33.4622,lon:-112.4786,type:'infill',src:'computed',bsls:19},
+{name:'Infill-22',lat:33.7955,lon:-111.8814,type:'infill',src:'computed',bsls:9},
+{name:'Infill-23',lat:33.6199,lon:-112.1883,type:'infill',src:'computed',bsls:9},
+{name:'Infill-24',lat:33.7031,lon:-112.4334,type:'infill',src:'computed',bsls:8},
+{name:'Infill-25',lat:33.5628,lon:-112.3654,type:'infill',src:'computed',bsls:6},
+{name:'Infill-26',lat:33.7521,lon:-112.2509,type:'infill',src:'computed',bsls:12},
+{name:'Infill-27',lat:33.4642,lon:-111.9751,type:'infill',src:'computed',bsls:5},
+{name:'Infill-28',lat:33.5704,lon:-111.9967,type:'infill',src:'computed',bsls:4},
+{name:'Infill-29',lat:33.5918,lon:-112.5031,type:'infill',src:'computed',bsls:5},
+{name:'Infill-30',lat:33.6156,lon:-111.8293,type:'infill',src:'computed',bsls:5},
+{name:'Infill-31',lat:33.4316,lon:-112.4124,type:'infill',src:'computed',bsls:5},
+{name:'Infill-32',lat:33.3322,lon:-111.7535,type:'infill',src:'computed',bsls:5},
+{name:'Infill-33',lat:33.4569,lon:-111.8319,type:'infill',src:'computed',bsls:3},
+{name:'Infill-34',lat:33.3997,lon:-111.6275,type:'infill',src:'computed',bsls:3},
+{name:'Infill-35',lat:33.5093,lon:-111.6905,type:'infill',src:'computed',bsls:4},
+{name:'Infill-36',lat:33.7679,lon:-111.8315,type:'infill',src:'computed',bsls:3},
+{name:'Infill-37',lat:33.2522,lon:-111.8899,type:'infill',src:'computed',bsls:3}
+];
+
+function switchTab(tab) {
         activeTab = tab;
         document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active');});
         document.querySelector('.tab-btn.'+tab).classList.add('active');
         if (tab==='current'){renderCurrent();}
         else if (tab==='corrected'){renderCorrected();}
-        else if (tab==='optimized'){renderOptimized();}else if (tab==='neilHybrid'){renderNeilHybrid();}else if (tab==='neilOptimistic'){renderNeilOptimistic();}else if (tab==='hybridArch'){renderHybridArch();}
+        else if (tab==='optimized'){renderOptimized();}else if (tab==='neilHybrid'){renderNeilHybrid();}else if (tab==='neilOptimistic'){renderNeilOptimistic();}else if (tab==='hybridArch'){renderHybridArch();} else if(tab==='welinkPrelim'){renderWelinkPrelim();}
         renderCoverage();
         if (layerVisibility['design-sites']) layers.design.addTo(map);
         if (layerVisibility['coverage']) layers.coverage.addTo(map);
